@@ -10,10 +10,69 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+// ==========================================
+// MATERI ANGGOTA 2: INTERFACE & TYPE DEFINITION
+// ==========================================
+type TipeKonsol = 'PS4' | 'PS5';
+
+interface PaketRental {
+  id: string;
+  namaPaket: string;
+  konsol: TipeKonsol;
+  harga: number;
+  durasi: string;
+  fitur: string[];
+  isPopuler?: boolean;
+}
+
+// ==========================================
+// MATERI ANGGOTA 2: ARRAY OF OBJECTS (DATA PAKET)
+// ==========================================
+const DAFTAR_PAKET: PaketRental[] = [
+  {
+    id: '1',
+    namaPaket: 'Paket Harian PS4 Spartan',
+    konsol: 'PS4',
+    harga: 80000,
+    durasi: '24 Jam',
+    fitur: ['2 Stik Original', 'Bebas Pilih 3 Game', 'Kabel HDMI & Power'],
+    isPopuler: false,
+  },
+  {
+    id: '2',
+    namaPaket: 'Paket Harian PS5 Spartan Ultra',
+    konsol: 'PS5',
+    harga: 150000,
+    durasi: '24 Jam',
+    fitur: ['2 Stik DualSense', 'Akses Semua Game PS5', 'Support 4K TV'],
+    isPopuler: true,
+  },
+  {
+    id: '3',
+    namaPaket: 'Paket Mingguan PS4 Warrior',
+    konsol: 'PS4',
+    harga: 450000,
+    durasi: '7 Hari',
+    fitur: ['2 Stik Original', 'Full Game Account', 'Gratis Antar Jemput'],
+    isPopuler: false,
+  },
+  {
+    id: '4',
+    namaPaket: 'Paket Mingguan PS5 Spartan King',
+    konsol: 'PS5',
+    harga: 850000,
+    durasi: '7 Hari',
+    fitur: ['2 Stik DualSense', 'VIP Support 24/7', 'Gratis Antar Jemput'],
+    isPopuler: true,
+  },
+];
+
 export default function App() {
   const [activeMenu, setActiveMenu] = useState('Beranda');
-  // State untuk kontrol dropdown menu hamburger
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  // State Anggota 2: Menyimpan paket yang dipilih
+  const [selectedPaketId, setSelectedPaketId] = useState<string | null>(null);
 
   const menuItems = ['Beranda', 'Tentang', 'Paket', 'Cara Sewa'];
 
@@ -23,29 +82,39 @@ export default function App() {
 
   const handleSelectMenu = (item: string) => {
     setActiveMenu(item);
-    setIsMenuOpen(false); // Otomatis menutup dropdown saat item dipilih
+    setIsMenuOpen(false);
+  };
+
+  // ==========================================
+  // MATERI ANGGOTA 2: CUSTOM FUNCTION
+  // ==========================================
+  const handlePilihPaket = (paket: PaketRental) => {
+    setSelectedPaketId(paket.id);
+    alert(`Anda memilih ${paket.namaPaket} - Rp ${paket.harga.toLocaleString('id-ID')}`);
+  };
+
+  const formatRupiah = (angka: number): string => {
+    return `Rp ${angka.toLocaleString('id-ID')}`;
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0A0C10" />
 
-      {/* 1. HEADER / NAVIGATION BAR */}
+      {/* 1. HEADER / NAVIGATION BAR (Anggota 1) */}
       <View style={styles.headerContainer}>
         <View style={styles.topHeaderBar}>
-          {/* LOGO & BRAND (SISI KIRI) */}
           <View style={styles.brandContainer}>
             <Image
               source={require('@/assets/images/logo.png')}
               style={styles.logoImage}
             />
             <View style={styles.brandTitleContainer}>
-              <Text style={styles.brandMainText}>TRIO</Text>
+              <Text style={styles.brandMainText}>SPARTAN</Text>
               <Text style={styles.brandSubText}>PLAYSTATION</Text>
             </View>
           </View>
 
-          {/* TOMBOL HAMBURGER / TITIK TIGA (POJOK KANAN SENDIRI) */}
           <TouchableOpacity
             style={[
               styles.hamburgerButton,
@@ -58,7 +127,6 @@ export default function App() {
           </TouchableOpacity>
         </View>
 
-        {/* DROPDOWN MENU KETIKA HAMBURGER DIKLIK */}
         {isMenuOpen && (
           <View style={styles.dropdownMenu}>
             {menuItems.map((item) => {
@@ -85,7 +153,6 @@ export default function App() {
               );
             })}
 
-            {/* TOMBOL PESAN SEKARANG DI DALAM MENU DROPDOWN */}
             <TouchableOpacity
               style={styles.orderButtonInDropdown}
               activeOpacity={0.8}
@@ -103,27 +170,21 @@ export default function App() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* 2. HERO SECTION */}
+        {/* 2. HERO SECTION (Anggota 1) */}
         <View style={styles.heroSection}>
-          
-          {/* BADGE KATEGORI */}
           <View style={styles.badgeContainer}>
             <Text style={styles.badgeText}>🎮 #1 Rental PlayStation Terpercaya</Text>
           </View>
 
-          {/* JUDUL UTAMA */}
           <Text style={styles.heroTitle}>
-            RENTAL <Text style={styles.titleCream}>PS4</Text> & <Text style={styles.titleRed}>PS5</Text>
+            Spartan PlayStation - <Text style={styles.titleCream}>Rental PS4</Text> & <Text style={styles.titleRed}>PS5 Terpercaya</Text>
           </Text>
 
-          {/* DESKRIPSI SINGKAT */}
           <Text style={styles.heroSub}>
             Nikmati pengalaman gaming terbaik tanpa harus membeli. Koleksi game lengkap, kondisi prima, harga bersahabat.
           </Text>
 
-          {/* 3. DUA TOMBOL AKSI BERDAMPINGAN */}
           <View style={styles.actionButtonsContainer}>
-            {/* Tombol Pesan Sekarang */}
             <TouchableOpacity
               style={styles.primaryButton}
               activeOpacity={0.85}
@@ -132,7 +193,6 @@ export default function App() {
               <Text style={styles.primaryButtonText}>🎮  Pesan Sekarang</Text>
             </TouchableOpacity>
 
-            {/* Tombol Lihat Paket */}
             <TouchableOpacity
               style={styles.secondaryButton}
               activeOpacity={0.85}
@@ -142,7 +202,6 @@ export default function App() {
             </TouchableOpacity>
           </View>
 
-          {/* 4. STATISTIK RINGKAS */}
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>500</Text>
@@ -162,8 +221,79 @@ export default function App() {
               <Text style={styles.statLabel}>Rating</Text>
             </View>
           </View>
-
         </View>
+
+        {/* ==================================================== */}
+        {/* 3. SECTION PAKET RENTAL & DATA (TUGAS ANGGOTA 2)      */}
+        {/* ==================================================== */}
+        <View style={styles.paketSection}>
+          <Text style={styles.sectionTitle}>Pilihan Paket Spartan Rental</Text>
+          <Text style={styles.sectionSubtitle}>
+            Pilih paket yang sesuai dengan kebutuhan main kamu
+          </Text>
+
+          <View style={styles.paketGrid}>
+            {DAFTAR_PAKET.map((paket) => {
+              const isSelected = selectedPaketId === paket.id;
+
+              return (
+                <View
+                  key={paket.id}
+                  style={[
+                    styles.cardPaket,
+                    paket.isPopuler && styles.cardPopuler,
+                    isSelected && styles.cardSelected,
+                  ]}
+                >
+                  {paket.isPopuler && (
+                    <View style={styles.badgePopuler}>
+                      <Text style={styles.badgePopulerText}>🔥 Terlaris</Text>
+                    </View>
+                  )}
+
+                  <View style={styles.cardHeader}>
+                    <Text style={styles.namaPaket}>{paket.namaPaket}</Text>
+                    <View
+                      style={[
+                        styles.badgeKonsol,
+                        paket.konsol === 'PS5' ? styles.bgPs5 : styles.bgPs4,
+                      ]}
+                    >
+                      <Text style={styles.textKonsol}>{paket.konsol}</Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.priceContainer}>
+                    <Text style={styles.hargaText}>{formatRupiah(paket.harga)}</Text>
+                    <Text style={styles.durasiText}> / {paket.durasi}</Text>
+                  </View>
+
+                  <View style={styles.fiturContainer}>
+                    {paket.fitur.map((fiturItem, index) => (
+                      <Text key={index} style={styles.fiturText}>
+                        ✓ {fiturItem}
+                      </Text>
+                    ))}
+                  </View>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.btnPilih,
+                      isSelected && styles.btnPilihActive,
+                    ]}
+                    onPress={() => handlePilihPaket(paket)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.btnPilihText}>
+                      {isSelected ? '✓ Terpilih' : 'Pilih Paket'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -213,8 +343,6 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     marginTop: -2,
   },
-
-  /* HAMBURGER BUTTON (POJOK KANAN SENDIRI) */
   hamburgerButton: {
     width: 42,
     height: 42,
@@ -235,8 +363,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     lineHeight: 26,
   },
-
-  /* DROPDOWN MENU */
   dropdownMenu: {
     backgroundColor: '#151821',
     borderTopWidth: 1,
@@ -276,12 +402,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
-
-  /* HERO SECTION */
   heroSection: {
     paddingHorizontal: 20,
     paddingTop: 36,
-    paddingBottom: 40,
+    paddingBottom: 30,
     alignItems: 'center',
   },
   badgeContainer: {
@@ -299,7 +423,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   heroTitle: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: '900',
     color: '#FFFFFF',
     textAlign: 'center',
@@ -320,8 +444,6 @@ const styles = StyleSheet.create({
     maxWidth: 340,
     marginBottom: 28,
   },
-
-  /* TOMBOL BERDAMPINGAN */
   actionButtonsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -335,11 +457,6 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 20,
     borderRadius: 12,
-    elevation: 6,
-    shadowColor: '#E11D48',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
   },
   primaryButtonText: {
     color: '#FFFFFF',
@@ -359,8 +476,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
-
-  /* STATISTIK RINGKAS */
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -387,5 +502,123 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#8A94A6',
     fontWeight: '500',
+  },
+  paketSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#1A1D26',
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#E5C185',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  sectionSubtitle: {
+    fontSize: 13,
+    color: '#94A3B8',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  paketGrid: {
+    gap: 16,
+  },
+  cardPaket: {
+    backgroundColor: '#151821',
+    borderRadius: 16,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: '#222735',
+    position: 'relative',
+  },
+  cardPopuler: {
+    borderColor: '#E11D48',
+  },
+  cardSelected: {
+    borderColor: '#E5C185',
+    backgroundColor: '#1A1E2B',
+  },
+  badgePopuler: {
+    position: 'absolute',
+    top: -12,
+    right: 16,
+    backgroundColor: '#E11D48',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  badgePopulerText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  namaPaket: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    flex: 1,
+  },
+  badgeKonsol: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  bgPs4: {
+    backgroundColor: '#1E3A8A',
+  },
+  bgPs5: {
+    backgroundColor: '#0284C7',
+  },
+  textKonsol: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 14,
+  },
+  hargaText: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#E5C185',
+  },
+  durasiText: {
+    fontSize: 12,
+    color: '#94A3B8',
+  },
+  fiturContainer: {
+    marginBottom: 16,
+    gap: 6,
+  },
+  fiturText: {
+    fontSize: 12,
+    color: '#CBD5E1',
+  },
+  btnPilih: {
+    backgroundColor: '#1E202B',
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#2D3142',
+  },
+  btnPilihActive: {
+    backgroundColor: '#E5C185',
+    borderColor: '#E5C185',
+  },
+  btnPilihText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
   },
 });
