@@ -10,7 +10,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import BookingForm from '../components/BookingForm';
+import BookingForm, {
+  BookingData,
+} from '../components/BookingForm';
+
 import BookingResult from '../components/BookingResult';
 
 // ==========================================
@@ -74,10 +77,14 @@ export default function App() {
   const [activeMenu, setActiveMenu] = useState('Beranda');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Menyimpan paket yang dipilih
+  // Menyimpan paket yang dipilih pada bagian paket
   const [selectedPaketId, setSelectedPaketId] = useState<string | null>(
     null
   );
+
+  // Menyimpan hasil booking dari BookingForm
+  const [bookingData, setBookingData] =
+    useState<BookingData | null>(null);
 
   const menuItems = ['Beranda', 'Tentang', 'Paket', 'Cara Sewa'];
 
@@ -107,9 +114,19 @@ export default function App() {
     return `Rp ${angka.toLocaleString('id-ID')}`;
   };
 
+  // ==========================================
+  // MENERIMA DATA DARI BOOKING FORM
+  // ==========================================
+  const handleBookingSuccess = (data: BookingData) => {
+    setBookingData(data);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#0A0C10" />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="#0A0C10"
+      />
 
       {/* ==========================================
           HEADER
@@ -231,13 +248,17 @@ export default function App() {
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>500</Text>
               <Text style={styles.statSymbol}>+</Text>
-              <Text style={styles.statLabel}>Pelanggan Puas</Text>
+              <Text style={styles.statLabel}>
+                Pelanggan Puas
+              </Text>
             </View>
 
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>50</Text>
               <Text style={styles.statSymbol}>+</Text>
-              <Text style={styles.statLabel}>Game Tersedia</Text>
+              <Text style={styles.statLabel}>
+                Game Tersedia
+              </Text>
             </View>
 
             <View style={styles.statItem}>
@@ -262,15 +283,18 @@ export default function App() {
 
           <View style={styles.paketGrid}>
             {DAFTAR_PAKET.map((paket) => {
-              const isSelected = selectedPaketId === paket.id;
+              const isSelected =
+                selectedPaketId === paket.id;
 
               return (
                 <View
                   key={paket.id}
                   style={[
                     styles.cardPaket,
-                    paket.isPopuler && styles.cardPopuler,
-                    isSelected && styles.cardSelected,
+                    paket.isPopuler &&
+                      styles.cardPopuler,
+                    isSelected &&
+                      styles.cardSelected,
                   ]}
                 >
                   {paket.isPopuler && (
@@ -311,26 +335,33 @@ export default function App() {
                   </View>
 
                   <View style={styles.fiturContainer}>
-                    {paket.fitur.map((fiturItem, index) => (
-                      <Text
-                        key={index}
-                        style={styles.fiturText}
-                      >
-                        ✓ {fiturItem}
-                      </Text>
-                    ))}
+                    {paket.fitur.map(
+                      (fiturItem, index) => (
+                        <Text
+                          key={index}
+                          style={styles.fiturText}
+                        >
+                          ✓ {fiturItem}
+                        </Text>
+                      )
+                    )}
                   </View>
 
                   <TouchableOpacity
                     style={[
                       styles.btnPilih,
-                      isSelected && styles.btnPilihActive,
+                      isSelected &&
+                        styles.btnPilihActive,
                     ]}
-                    onPress={() => handlePilihPaket(paket)}
+                    onPress={() =>
+                      handlePilihPaket(paket)
+                    }
                     activeOpacity={0.8}
                   >
                     <Text style={styles.btnPilihText}>
-                      {isSelected ? '✓ Terpilih' : 'Pilih Paket'}
+                      {isSelected
+                        ? '✓ Terpilih'
+                        : 'Pilih Paket'}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -342,12 +373,15 @@ export default function App() {
         {/* ==========================================
             BOOKING FORM - ANGGOTA 3
             ========================================== */}
-        <BookingForm />
+        <BookingForm
+          daftarPaket={DAFTAR_PAKET}
+          onBookingSuccess={handleBookingSuccess}
+        />
 
         {/* ==========================================
             BOOKING RESULT - ANGGOTA 3
             ========================================== */}
-        <BookingResult />
+        <BookingResult bookingData={bookingData} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -359,9 +393,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#0A0C10',
   },
 
-  // ==========================================
-  // HEADER STYLE
-  // ==========================================
   headerContainer: {
     backgroundColor: '#0F1117',
     borderBottomWidth: 1,
@@ -477,9 +508,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-  // ==========================================
-  // HERO STYLE
-  // ==========================================
   heroSection: {
     paddingHorizontal: 20,
     paddingTop: 36,
@@ -598,9 +626,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // ==========================================
-  // PAKET STYLE
-  // ==========================================
   paketSection: {
     paddingHorizontal: 20,
     paddingVertical: 20,
