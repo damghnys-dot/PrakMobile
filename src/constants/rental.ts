@@ -64,6 +64,7 @@ export const PENGALAMAN_DATA: PengalamanItem[] = [
     peran: 'Penyedia Layanan Entertainment',
     instansi: 'TRIO PlayStation',
     tahun: '2023 - Sekarang',
-    deskripsi: 'Melayani ratusan gamer setiap bulan dengan pengalaman main game terbaik, turnamen eSports lokal, dan rental harian/mingguan.',
+    deskripsi:
+      'Melayani ratusan gamer setiap bulan dengan pengalaman main game terbaik, turnamen eSports lokal, dan rental harian/mingguan.',
   },
 ];
