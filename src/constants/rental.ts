@@ -40,11 +40,11 @@ export const DAFTAR_PAKET: PaketRental[] = [
 ];
 
 export const PROFILE_DATA: ProfileData = {
-  nama: 'Developer Spartan',
-  sebutan: 'Frontend Developer & UI/UX Enthusiast',
-  bio: 'Seorang pengembang aplikasi yang berdedikasi dalam membangun antarmuka pengguna yang bersih, responsif, dan intuitif.',
-  lokasi: 'Ponorogo, Jawa Timur',
-  email: 'spartan@rentalps.id',
+  nama: 'TRIO PlayStation',
+  sebutan: 'Pusat Rental & Game Corner Terlengkap',
+  bio: 'Penyedia layanan rental PlayStation berkualitas dengan konsol terbaru, pilihan game populer terlengkap, serta tempat main yang nyaman dan seru.',
+  lokasi: 'Malang,jawa Timur, Indonesia',
+  email: 'info@trioplaystation.id',
   telepon: '+62 812 3456 7890',
   github: 'https://github.com',
   linkedin: 'https://linkedin.com',
@@ -52,18 +52,18 @@ export const PROFILE_DATA: ProfileData = {
 };
 
 export const SKILLS_DATA: SkillItem[] = [
-  { id: '1', nama: 'React Native', tingkat: 'Lanjutan' },
-  { id: '2', nama: 'TypeScript', tingkat: 'Lanjutan' },
-  { id: '3', nama: 'UI/UX Design', tingkat: 'Menengah' },
-  { id: '4', nama: 'State Management', tingkat: 'Lanjutan' },
+  { id: '1', nama: 'PlayStation 5 & PS4 Pro', tingkat: 'Tersedia' },
+  { id: '2', nama: 'Koleksi Game Terbaru & FIFA/FC', tingkat: 'Lengkap' },
+  { id: '3', nama: 'Ruangan AC & TV 4K HDR', tingkat: 'Fasilitas Utama' },
+  { id: '4', nama: 'Snack & Drink Corner', tingkat: 'Tersedia' },
 ];
 
 export const PENGALAMAN_DATA: PengalamanItem[] = [
   {
     id: '1',
-    peran: 'Mobile Developer',
-    instansi: 'Spartan Gaming Studio',
+    peran: 'Penyedia Layanan Entertainment'
+    instansi: 'TRIO PlayStation',
     tahun: '2023 - Sekarang',
-    deskripsi: 'Mengembangkan aplikasi persewaan PlayStation dan portofolio interaktif.',
+    deskripsi: 'Melayani ratusan gamer setiap bulan dengan pengalaman main game terbaik, turnamen eSports lokal, dan rental harian/mingguan.',
   },
 ];
