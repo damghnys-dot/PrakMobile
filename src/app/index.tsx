@@ -24,7 +24,10 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#0A0C10" />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="#0A0C10"
+      />
 
       {/* HEADER / NAVBAR APP */}
       <View style={styles.headerContainer}>
