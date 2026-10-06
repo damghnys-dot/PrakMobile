@@ -43,7 +43,7 @@ export const PROFILE_DATA: ProfileData = {
   nama: 'TRIO PlayStation',
   sebutan: 'Pusat Rental & Game Corner Terlengkap',
   bio: 'Penyedia layanan rental PlayStation berkualitas dengan konsol terbaru, pilihan game populer terlengkap, serta tempat main yang nyaman dan seru.',
-  lokasi: 'Malang,jawa Timur, Indonesia',
+  lokasi: 'malang, Jawa Timur, Indonesia',
   email: 'info@trioplaystation.id',
   telepon: '+62 812 3456 7890',
   github: 'https://github.com',
@@ -61,7 +61,7 @@ export const SKILLS_DATA: SkillItem[] = [
 export const PENGALAMAN_DATA: PengalamanItem[] = [
   {
     id: '1',
-    peran: 'Penyedia Layanan Entertainment'
+    peran: 'Penyedia Layanan Entertainment',
     instansi: 'TRIO PlayStation',
     tahun: '2023 - Sekarang',
     deskripsi: 'Melayani ratusan gamer setiap bulan dengan pengalaman main game terbaik, turnamen eSports lokal, dan rental harian/mingguan.',
