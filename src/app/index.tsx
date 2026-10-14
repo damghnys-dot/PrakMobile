@@ -174,7 +174,7 @@ export default function Index() {
                 JAM OPERASIONAL
               </Text>
               <Text style={profileStyles.infoColumnValue}>
-                09.00 - 24.00 WIB
+                Buka 24 Jam (Setiap Hari)
               </Text>
             </View>
 
