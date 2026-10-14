@@ -4,7 +4,17 @@ import { PaketRental } from '../../types/rental';
 import { DAFTAR_PAKET } from '../../constants/rental';
 import { rentalStyles as styles } from '../../styles/rental';
 
-export const BerandaRental: React.FC = () => {
+export interface BerandaRentalProps {
+  onPesanSekarang?: () => void;
+  onLihatPaket?: () => void;
+  onPaketSectionLayout?: (y: number) => void;
+}
+
+export const BerandaRental: React.FC<BerandaRentalProps> = ({
+  onPesanSekarang,
+  onLihatPaket,
+  onPaketSectionLayout,
+}) => {
   const [selectedPaketId, setSelectedPaketId] = useState<string | null>(null);
   const { width } = useWindowDimensions();
   const isDesktop = width >= 640;
@@ -22,7 +32,6 @@ export const BerandaRental: React.FC = () => {
 
   return (
     <View>
-      {/* HERO SECTION */}
       <View style={styles.heroSection}>
         <View style={styles.badgeContainer}>
           <Text style={styles.badgeText}>#1 Rental PlayStation Terpercaya</Text>
@@ -37,15 +46,22 @@ export const BerandaRental: React.FC = () => {
         </Text>
 
         <View style={styles.actionButtonsContainer}>
-          <TouchableOpacity style={styles.primaryButton} activeOpacity={0.85}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            activeOpacity={0.85}
+            onPress={onPesanSekarang}
+          >
             <Text style={styles.primaryButtonText}>Pesan Sekarang</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.85}>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            activeOpacity={0.85}
+            onPress={onLihatPaket}
+          >
             <Text style={styles.secondaryButtonText}>Lihat Paket</Text>
           </TouchableOpacity>
         </View>
 
-        {/* STATISTIK SECTION */}
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
             <View style={styles.statNumberRow}>
@@ -73,8 +89,12 @@ export const BerandaRental: React.FC = () => {
         </View>
       </View>
 
-      {/* SECTION PAKET */}
-      <View style={styles.paketSection}>
+      <View
+        style={styles.paketSection}
+        onLayout={(event) => {
+          onPaketSectionLayout?.(event.nativeEvent.layout.y);
+        }}
+      >
         <Text style={styles.sectionTitle}>Pilihan Paket Spartan Rental</Text>
         <Text style={styles.sectionSubtitle}>Pilih paket yang sesuai dengan kebutuhan main kamu</Text>
 
@@ -133,11 +153,6 @@ export const BerandaRental: React.FC = () => {
               </View>
             );
           })}
-        </View>
-
-        {/* BADGE ELEGAN MODUL 1 */}
-        <View style={styles.modulBadge}>
-          <Text style={styles.modulBadgeText}>MODUL 1</Text>
         </View>
       </View>
     </View>

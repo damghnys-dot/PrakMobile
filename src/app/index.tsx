@@ -50,6 +50,7 @@ export default function Index() {
   const scrollRef = useRef<ScrollView>(null);
 
   const [bookingY, setBookingY] = useState(0);
+  const [paketY, setPaketY] = useState(0);
 
   const menuItems = ['Beranda', 'Tentang', 'Paket'];
 
@@ -57,25 +58,55 @@ export default function Index() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const scrollToBooking = () => {
+    const targetY = bookingY > 0 ? bookingY : 800;
+    if (activeMenu === 'Tentang') {
+      setActiveMenu('Beranda');
+      setTimeout(() => {
+        scrollRef.current?.scrollTo({
+          y: targetY,
+          animated: true,
+        });
+      }, 100);
+    } else {
+      scrollRef.current?.scrollTo({
+        y: targetY,
+        animated: true,
+      });
+    }
+  };
+
+  const scrollToPaket = () => {
+    const targetY = paketY > 0 ? paketY : 380;
+    if (activeMenu === 'Tentang') {
+      setActiveMenu('Beranda');
+      setTimeout(() => {
+        scrollRef.current?.scrollTo({
+          y: targetY,
+          animated: true,
+        });
+      }, 100);
+    } else {
+      scrollRef.current?.scrollTo({
+        y: targetY,
+        animated: true,
+      });
+    }
+  };
+
   const handleSelectMenu = (item: string) => {
-    setActiveMenu(item);
     setIsMenuOpen(false);
 
     if (item === 'Beranda') {
+      setActiveMenu('Beranda');
       scrollRef.current?.scrollTo({
         y: 0,
         animated: true,
       });
-    }
-
-    if (item === 'Paket') {
-      scrollRef.current?.scrollTo({
-        y: 350,
-        animated: true,
-      });
-    }
-
-    if (item === 'Tentang') {
+    } else if (item === 'Paket') {
+      scrollToPaket();
+    } else if (item === 'Tentang') {
+      setActiveMenu('Tentang');
       scrollRef.current?.scrollTo({
         y: 0,
         animated: true,
@@ -96,9 +127,7 @@ export default function Index() {
 
   const aboutContent = (
     <View style={profileStyles.profileWrapper}>
-      {/* PROFIL CARD BERSIH */}
       <View style={profileStyles.profileCard}>
-        {/* TOP ACCENT BAR */}
         <View style={profileStyles.topAccentBar} />
 
         <View style={profileStyles.profileCardBody}>
@@ -126,7 +155,6 @@ export default function Index() {
             {PROFILE_DATA.bio}
           </Text>
 
-          {/* 3 KOLOM INFO SINGKAT */}
           <View style={profileStyles.infoColumnsContainer}>
             <View style={profileStyles.infoColumn}>
               <Text style={profileStyles.infoColumnLabel}>
@@ -158,7 +186,6 @@ export default function Index() {
         </View>
       </View>
 
-      {/* TAB NAVIGASI */}
       <View style={profileStyles.tabContainer}>
         <TouchableOpacity
           style={[
@@ -201,7 +228,6 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
-      {/* TAB CONTENT GRID */}
       <View style={profileStyles.contentSection}>
         {activeProfileTab === 'keahlian' ? (
           <View style={profileStyles.gridContainer}>
@@ -286,7 +312,6 @@ export default function Index() {
         backgroundColor="#0071DC"
       />
 
-      {/* HEADER */}
       <View style={styles.headerContainer}>
         <View style={styles.topHeaderBar}>
           <View style={styles.brandContainer}>
@@ -322,7 +347,6 @@ export default function Index() {
           </TouchableOpacity>
         </View>
 
-        {/* FLOATING DROPDOWN MENU */}
         {isMenuOpen && (
           <View style={styles.floatingDropdownMenu}>
             {menuItems.map((item) => (
@@ -353,7 +377,6 @@ export default function Index() {
         )}
       </View>
 
-      {/* CONTENT */}
       <ScrollView
         ref={scrollRef}
         showsVerticalScrollIndicator={false}
@@ -363,9 +386,12 @@ export default function Index() {
           aboutContent
         ) : (
           <>
-            <BerandaRental />
+            <BerandaRental
+              onPesanSekarang={scrollToBooking}
+              onLihatPaket={scrollToPaket}
+              onPaketSectionLayout={(y) => setPaketY(y)}
+            />
 
-            {/* BOOKING FORM - ANGGOTA 3 */}
             <View
               style={{ maxWidth: 680, width: '100%', alignSelf: 'center' }}
               onLayout={(event) => {
@@ -383,7 +409,6 @@ export default function Index() {
                 }
               />
 
-              {/* BOOKING RESULT - ANGGOTA 3 */}
               <BookingResult
                 bookingData={bookingData}
               />

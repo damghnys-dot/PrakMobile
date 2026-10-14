@@ -284,23 +284,6 @@ export const rentalStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "700",
   },
-  modulBadge: {
-    alignSelf: "center",
-    marginTop: 28,
-    marginBottom: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    backgroundColor: "#E0F2FE",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#BAE6FD",
-  },
-  modulBadgeText: {
-    color: "#0369A1",
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 1,
-  },
 });
 
 export const profileStyles = StyleSheet.create({
