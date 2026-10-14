@@ -16,7 +16,6 @@ export default function BookingResult({ bookingData }: BookingResultProps) {
 
   const handleKonfirmasi = () => {
     setStatus("Booking Dikonfirmasi");
-
     alert("Booking berhasil dikonfirmasi!");
   };
 
@@ -29,7 +28,9 @@ export default function BookingResult({ bookingData }: BookingResultProps) {
         <Text style={styles.sectionTitle}>Booking Result</Text>
 
         <View style={styles.emptyCard}>
-          <Text style={styles.emptyIcon}>🎮</Text>
+          <View style={styles.emptyIconBadge}>
+            <Text style={styles.emptyIconText}>PS</Text>
+          </View>
 
           <Text style={styles.emptyTitle}>Belum Ada Booking</Text>
 
@@ -68,44 +69,37 @@ export default function BookingResult({ bookingData }: BookingResultProps) {
 
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Nama Penyewa</Text>
-
           <Text style={styles.detailValue}>{bookingData.nama}</Text>
         </View>
 
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>No. WhatsApp</Text>
-
           <Text style={styles.detailValue}>{bookingData.whatsapp}</Text>
         </View>
 
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Paket</Text>
-
           <Text style={styles.detailValue}>{bookingData.paket.namaPaket}</Text>
         </View>
 
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Konsol</Text>
-
           <Text style={styles.detailValue}>{bookingData.paket.konsol}</Text>
         </View>
 
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Durasi</Text>
-
           <Text style={styles.detailValue}>{bookingData.paket.durasi}</Text>
         </View>
 
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Tanggal Sewa</Text>
-
           <Text style={styles.detailValue}>{bookingData.tanggal}</Text>
         </View>
 
         {bookingData.catatan !== "" && (
           <View style={styles.noteContainer}>
             <Text style={styles.noteLabel}>Catatan</Text>
-
             <Text style={styles.noteText}>{bookingData.catatan}</Text>
           </View>
         )}
@@ -115,7 +109,6 @@ export default function BookingResult({ bookingData }: BookingResultProps) {
         {/* TOTAL */}
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>Total Pembayaran</Text>
-
           <Text style={styles.totalPrice}>
             {formatRupiah(bookingData.paket.harga)}
           </Text>
@@ -143,7 +136,7 @@ export default function BookingResult({ bookingData }: BookingResultProps) {
           <TouchableOpacity
             style={styles.confirmButton}
             onPress={handleKonfirmasi}
-            activeOpacity={0.8}
+            activeOpacity={0.85}
           >
             <Text style={styles.confirmButtonText}>✓ Konfirmasi Booking</Text>
           </TouchableOpacity>
@@ -162,53 +155,76 @@ export default function BookingResult({ bookingData }: BookingResultProps) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingVertical: 30,
-    borderTopWidth: 1,
-    borderTopColor: "#1A1D26",
+    paddingVertical: 24,
+    maxWidth: 680,
+    width: "100%",
+    alignSelf: "center",
   },
 
   sectionTitle: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#E5C185",
+    color: "#0F172A",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 16,
   },
 
   emptyCard: {
-    backgroundColor: "#151821",
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 30,
     borderWidth: 1,
-    borderColor: "#222735",
+    borderColor: "#E2E8F0",
     alignItems: "center",
+    shadowColor: "#0F172A",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
 
-  emptyIcon: {
-    fontSize: 40,
+  emptyIconBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: 10,
+    backgroundColor: "#00439C",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 12,
   },
 
-  emptyTitle: {
+  emptyIconText: {
     color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "900",
+    letterSpacing: 1,
+  },
+
+  emptyTitle: {
+    color: "#0F172A",
     fontSize: 17,
-    fontWeight: "800",
+    fontWeight: "700",
     marginBottom: 6,
   },
 
   emptyText: {
-    color: "#94A3B8",
-    fontSize: 12,
+    color: "#475569",
+    fontSize: 13,
     textAlign: "center",
     lineHeight: 18,
   },
 
   resultCard: {
-    backgroundColor: "#151821",
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    borderColor: "#222735",
+    borderColor: "#E2E8F0",
+    shadowColor: "#0F172A",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
 
   successContainer: {
@@ -220,15 +236,15 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#166534",
+    backgroundColor: "#DCFCE7",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 14,
   },
 
   successIcon: {
-    color: "#FFFFFF",
-    fontSize: 25,
+    color: "#16A34A",
+    fontSize: 22,
     fontWeight: "900",
   },
 
@@ -239,64 +255,66 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 17,
     fontWeight: "800",
-    color: "#FFFFFF",
+    color: "#0F172A",
     marginBottom: 3,
   },
 
   successSubtitle: {
-    fontSize: 12,
-    color: "#94A3B8",
+    fontSize: 13,
+    color: "#475569",
   },
 
   divider: {
     height: 1,
-    backgroundColor: "#2D3142",
-    marginVertical: 18,
+    backgroundColor: "#E2E8F0",
+    marginVertical: 16,
   },
 
   detailTitle: {
-    color: "#E5C185",
+    color: "#0071DC",
     fontSize: 13,
-    fontWeight: "800",
-    marginBottom: 14,
+    fontWeight: "700",
+    marginBottom: 12,
   },
 
   detailRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 13,
+    marginBottom: 10,
   },
 
   detailLabel: {
-    fontSize: 12,
-    color: "#94A3B8",
+    fontSize: 13,
+    color: "#475569",
     flex: 1,
   },
 
   detailValue: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#0F172A",
     flex: 1.5,
     textAlign: "right",
   },
 
   noteContainer: {
-    backgroundColor: "#1E202B",
+    backgroundColor: "#F8FAFC",
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
     padding: 10,
-    marginTop: 2,
+    marginTop: 4,
   },
 
   noteLabel: {
-    color: "#94A3B8",
+    color: "#475569",
     fontSize: 11,
-    marginBottom: 4,
+    marginBottom: 2,
   },
 
   noteText: {
-    color: "#FFFFFF",
+    color: "#0F172A",
     fontSize: 12,
   },
 
@@ -307,67 +325,67 @@ const styles = StyleSheet.create({
   },
 
   totalLabel: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "700",
-    color: "#CBD5E1",
+    color: "#0F172A",
   },
 
   totalPrice: {
-    fontSize: 19,
+    fontSize: 20,
     fontWeight: "900",
-    color: "#E5C185",
+    color: "#00439C",
   },
 
   statusContainer: {
-    backgroundColor: "#332701",
+    backgroundColor: "#FEF3C7",
     borderWidth: 1,
-    borderColor: "#8A6D1D",
+    borderColor: "#FDE68A",
     borderRadius: 8,
     paddingVertical: 9,
     paddingHorizontal: 12,
-    marginTop: 18,
+    marginTop: 16,
     marginBottom: 14,
   },
 
   statusConfirmed: {
-    backgroundColor: "#12351F",
-    borderColor: "#22C55E",
+    backgroundColor: "#DCFCE7",
+    borderColor: "#BBF7D0",
   },
 
   statusText: {
-    color: "#E5C185",
+    color: "#D97706",
     fontSize: 12,
     fontWeight: "700",
     textAlign: "center",
   },
 
   statusTextConfirmed: {
-    color: "#86EFAC",
+    color: "#15803D",
   },
 
   confirmButton: {
-    backgroundColor: "#E11D48",
+    backgroundColor: "#0071DC",
     paddingVertical: 13,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: "center",
   },
 
   confirmButtonText: {
     color: "#FFFFFF",
-    fontSize: 13,
-    fontWeight: "800",
+    fontSize: 14,
+    fontWeight: "700",
   },
 
   confirmedButton: {
-    backgroundColor: "#166534",
+    backgroundColor: "#16A34A",
     paddingVertical: 13,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: "center",
   },
 
   confirmedButtonText: {
     color: "#FFFFFF",
-    fontSize: 13,
-    fontWeight: "800",
+    fontSize: 14,
+    fontWeight: "700",
   },
 });

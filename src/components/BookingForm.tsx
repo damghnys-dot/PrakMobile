@@ -86,7 +86,6 @@ export default function BookingForm({
     };
 
     onBookingSuccess(bookingData);
-
     setError('');
   };
 
@@ -110,7 +109,7 @@ export default function BookingForm({
           <TextInput
             style={styles.input}
             placeholder="Masukkan nama"
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#94A3B8"
             value={nama}
             onChangeText={setNama}
           />
@@ -125,7 +124,7 @@ export default function BookingForm({
           <TextInput
             style={styles.input}
             placeholder="Contoh: 081234567890"
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#94A3B8"
             value={whatsapp}
             onChangeText={setWhatsapp}
             keyboardType="phone-pad"
@@ -244,8 +243,8 @@ export default function BookingForm({
 
           <TextInput
             style={styles.input}
-            placeholder="Contoh: 06 Oktober 2026"
-            placeholderTextColor="#64748B"
+            placeholder="Contoh: 15 Oktober 2026"
+            placeholderTextColor="#94A3B8"
             value={tanggal}
             onChangeText={setTanggal}
           />
@@ -260,7 +259,7 @@ export default function BookingForm({
           <TextInput
             style={[styles.input, styles.textArea]}
             placeholder="Contoh: Minta 2 stik tambahan"
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#94A3B8"
             value={catatan}
             onChangeText={setCatatan}
             multiline
@@ -273,7 +272,7 @@ export default function BookingForm({
         {error !== '' && (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>
-              ⚠ {error}
+              {error}
             </Text>
           </View>
         )}
@@ -282,10 +281,10 @@ export default function BookingForm({
         <TouchableOpacity
           style={styles.bookingButton}
           onPress={handleBooking}
-          activeOpacity={0.8}
+          activeOpacity={0.85}
         >
           <Text style={styles.bookingButtonText}>
-            🎮 Booking Sekarang
+            Booking Sekarang
           </Text>
         </TouchableOpacity>
       </View>
@@ -296,32 +295,38 @@ export default function BookingForm({
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingVertical: 30,
-    borderTopWidth: 1,
-    borderTopColor: '#1A1D26',
+    paddingVertical: 24,
+    maxWidth: 680,
+    width: '100%',
+    alignSelf: 'center',
   },
 
   sectionTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#E5C185',
+    color: '#0F172A',
     textAlign: 'center',
     marginBottom: 6,
   },
 
   sectionSubtitle: {
     fontSize: 13,
-    color: '#94A3B8',
+    color: '#475569',
     textAlign: 'center',
     marginBottom: 20,
   },
 
   formCard: {
-    backgroundColor: '#151821',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    padding: 18,
+    padding: 20,
     borderWidth: 1,
-    borderColor: '#222735',
+    borderColor: '#E2E8F0',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
 
   inputGroup: {
@@ -330,19 +335,19 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 13,
-    fontWeight: '700',
-    color: '#CBD5E1',
+    fontWeight: '600',
+    color: '#0F172A',
     marginBottom: 8,
   },
 
   input: {
-    backgroundColor: '#1E202B',
+    backgroundColor: '#F8FAFC',
     borderWidth: 1,
-    borderColor: '#2D3142',
-    borderRadius: 10,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    color: '#FFFFFF',
+    color: '#0F172A',
     fontSize: 13,
   },
 
@@ -351,10 +356,10 @@ const styles = StyleSheet.create({
   },
 
   selectButton: {
-    backgroundColor: '#1E202B',
+    backgroundColor: '#F8FAFC',
     borderWidth: 1,
-    borderColor: '#2D3142',
-    borderRadius: 10,
+    borderColor: '#CBD5E1',
+    borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 13,
     flexDirection: 'row',
@@ -363,41 +368,46 @@ const styles = StyleSheet.create({
   },
 
   selectText: {
-    color: '#FFFFFF',
+    color: '#0F172A',
     fontSize: 13,
     flex: 1,
     marginRight: 10,
   },
 
   placeholderText: {
-    color: '#64748B',
+    color: '#94A3B8',
   },
 
   arrow: {
-    color: '#E5C185',
+    color: '#0071DC',
     fontSize: 12,
   },
 
   packageList: {
     marginTop: 8,
-    backgroundColor: '#1E202B',
-    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#2D3142',
+    borderColor: '#CBD5E1',
     overflow: 'hidden',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
   },
 
   packageItem: {
     padding: 13,
     borderBottomWidth: 1,
-    borderBottomColor: '#2D3142',
+    borderBottomColor: '#E2E8F0',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
 
   packageItemSelected: {
-    backgroundColor: '#2A2930',
+    backgroundColor: '#E0F2FE',
   },
 
   packageInfo: {
@@ -406,28 +416,28 @@ const styles = StyleSheet.create({
   },
 
   packageName: {
-    color: '#FFFFFF',
-    fontSize: 12,
+    color: '#0F172A',
+    fontSize: 13,
     fontWeight: '700',
     marginBottom: 4,
   },
 
   packageDetail: {
-    color: '#94A3B8',
+    color: '#475569',
     fontSize: 11,
   },
 
   packagePrice: {
-    color: '#E5C185',
-    fontSize: 12,
+    color: '#00439C',
+    fontSize: 13,
     fontWeight: '800',
   },
 
   selectedPackage: {
-    backgroundColor: '#1A1E2B',
+    backgroundColor: '#EFF6FF',
     borderWidth: 1,
-    borderColor: '#E5C185',
-    borderRadius: 10,
+    borderColor: '#BFDBFE',
+    borderRadius: 8,
     padding: 14,
     marginBottom: 16,
   },
@@ -440,80 +450,81 @@ const styles = StyleSheet.create({
   },
 
   selectedTitle: {
-    color: '#E5C185',
+    color: '#0071DC',
     fontSize: 11,
     fontWeight: '700',
   },
 
   consoleBadge: {
-    backgroundColor: '#E11D48',
+    backgroundColor: '#E0F2FE',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
   },
 
   consoleText: {
-    color: '#FFFFFF',
+    color: '#0369A1',
     fontSize: 10,
     fontWeight: '800',
   },
 
   selectedPackageName: {
-    color: '#FFFFFF',
+    color: '#0F172A',
     fontSize: 15,
     fontWeight: '800',
-    marginBottom: 12,
+    marginBottom: 10,
   },
 
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 4,
   },
 
   priceLabel: {
-    color: '#94A3B8',
+    color: '#475569',
     fontSize: 12,
   },
 
   priceValue: {
-    color: '#E5C185',
-    fontSize: 17,
+    color: '#00439C',
+    fontSize: 16,
     fontWeight: '900',
   },
 
   durationValue: {
-    color: '#FFFFFF',
+    color: '#0F172A',
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '600',
   },
 
   errorContainer: {
-    backgroundColor: '#3B111B',
+    backgroundColor: '#FEF2F2',
     borderWidth: 1,
-    borderColor: '#E11D48',
+    borderColor: '#FECACA',
     borderRadius: 8,
     padding: 10,
     marginBottom: 14,
   },
 
   errorText: {
-    color: '#FDA4AF',
+    color: '#DC2626',
     fontSize: 12,
     fontWeight: '600',
   },
 
   bookingButton: {
-    backgroundColor: '#E11D48',
+    backgroundColor: '#0071DC',
     paddingVertical: 14,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: 'center',
+    justifyContent: 'center',
   },
 
   bookingButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '700',
   },
 });

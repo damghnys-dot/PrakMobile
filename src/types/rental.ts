@@ -14,6 +14,7 @@ export interface SkillItem {
   id: string;
   nama: string;
   tingkat: string;
+  deskripsi?: string;
 }
 
 export interface PengalamanItem {

@@ -43,7 +43,7 @@ export const PROFILE_DATA: ProfileData = {
   nama: 'TRIO PlayStation',
   sebutan: 'Pusat Rental & Game Corner Terlengkap',
   bio: 'Penyedia layanan rental PlayStation berkualitas dengan konsol terbaru, pilihan game populer terlengkap, serta tempat main yang nyaman dan seru.',
-  lokasi: 'malang, Jawa Timur, Indonesia',
+  lokasi: 'Malang, Jawa Timur, Indonesia',
   email: 'info@trioplaystation.id',
   telepon: '+62 812 3456 7890',
   github: 'https://github.com',
@@ -52,10 +52,30 @@ export const PROFILE_DATA: ProfileData = {
 };
 
 export const SKILLS_DATA: SkillItem[] = [
-  { id: '1', nama: 'PlayStation 5 & PS4 Pro', tingkat: 'Tersedia' },
-  { id: '2', nama: 'Koleksi Game Terbaru & FIFA/FC', tingkat: 'Lengkap' },
-  { id: '3', nama: 'Ruangan AC & TV 4K HDR', tingkat: 'Fasilitas Utama' },
-  { id: '4', nama: 'Snack & Drink Corner', tingkat: 'Tersedia' },
+  {
+    id: '1',
+    nama: 'PlayStation 5 & PS4 Pro',
+    tingkat: 'Tersedia',
+    deskripsi: 'Konsol generasi terbaru dengan performa grafis maksimal',
+  },
+  {
+    id: '2',
+    nama: 'Koleksi Game Terbaru & FIFA/FC',
+    tingkat: 'Lengkap',
+    deskripsi: 'Update rutin judul game bola, aksi, dan co-op terbaru',
+  },
+  {
+    id: '3',
+    nama: 'Ruangan AC & TV 4K HDR',
+    tingkat: 'Fasilitas Utama',
+    deskripsi: 'Kenyamanan bermain dengan visual jernih dan pendingin ruangan prima',
+  },
+  {
+    id: '4',
+    nama: 'Snack & Drink Corner',
+    tingkat: 'Tersedia',
+    deskripsi: 'Pilihan camilan dan minuman dingin segar menemani sesi bermain',
+  },
 ];
 
 export const PENGALAMAN_DATA: PengalamanItem[] = [
@@ -66,5 +86,21 @@ export const PENGALAMAN_DATA: PengalamanItem[] = [
     tahun: '2023 - Sekarang',
     deskripsi:
       'Melayani ratusan gamer setiap bulan dengan pengalaman main game terbaik, turnamen eSports lokal, dan rental harian/mingguan.',
+  },
+  {
+    id: '2',
+    peran: 'Jaminan Unit & Stik Original',
+    instansi: 'Standar Kualitas',
+    tahun: 'Unit Terawat',
+    deskripsi:
+      'Seluruh konsol dan stik DualSense/DualShock selalu dicek dan dibersihkan secara berkala sebelum disewakan.',
+  },
+  {
+    id: '3',
+    peran: 'Layanan Antar Jemput Unit',
+    instansi: 'Khusus Area Malang',
+    tahun: 'Layanan Cepat',
+    deskripsi:
+      'Kemudahan sewa bawa pulang dengan pengantaran dan instalasi langsung ke rumah atau kos pelanggan.',
   },
 ];

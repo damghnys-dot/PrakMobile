@@ -7,12 +7,12 @@ import {
   StatusBar,
   Image,
   TouchableOpacity,
+  useWindowDimensions,
 } from 'react-native';
 
 import {
   SkillItem,
   PengalamanItem,
-  PaketRental,
 } from '../types/rental';
 
 import {
@@ -38,6 +38,8 @@ import BookingResult from '../components/BookingResult';
 export default function Index() {
   const [activeMenu, setActiveMenu] = useState('Beranda');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 640;
 
   const [activeProfileTab, setActiveProfileTab] =
     useState<'keahlian' | 'pengalaman'>('keahlian');
@@ -68,7 +70,7 @@ export default function Index() {
 
     if (item === 'Paket') {
       scrollRef.current?.scrollTo({
-        y: 300,
+        y: 350,
         animated: true,
       });
     }
@@ -93,32 +95,70 @@ export default function Index() {
   };
 
   const aboutContent = (
-    <View style={{ paddingBottom: 40 }}>
-      <View style={profileStyles.headerSection}>
-        <Image
-          source={{ uri: PROFILE_DATA.avatarUrl }}
-          style={profileStyles.avatarImage}
-        />
+    <View style={profileStyles.profileWrapper}>
+      {/* PROFIL CARD BERSIH */}
+      <View style={profileStyles.profileCard}>
+        {/* TOP ACCENT BAR */}
+        <View style={profileStyles.topAccentBar} />
 
-        <Text style={profileStyles.namaText}>
-          {PROFILE_DATA.nama}
-        </Text>
+        <View style={profileStyles.profileCardBody}>
+          <View style={profileStyles.badgePartner}>
+            <Text style={profileStyles.badgePartnerText}>
+              TENTANG KAMI
+            </Text>
+          </View>
 
-        <Text style={profileStyles.sebutanText}>
-          {PROFILE_DATA.sebutan}
-        </Text>
-
-        <View style={profileStyles.badgeLokasi}>
-          <Text style={profileStyles.badgeLokasiText}>
-            📍 {PROFILE_DATA.lokasi}
+          <Text style={profileStyles.namaText}>
+            {PROFILE_DATA.nama}
           </Text>
-        </View>
 
-        <Text style={profileStyles.bioText}>
-          {PROFILE_DATA.bio}
-        </Text>
+          <Text style={profileStyles.sebutanText}>
+            {PROFILE_DATA.sebutan}
+          </Text>
+
+          <View style={profileStyles.badgeLokasi}>
+            <Text style={profileStyles.badgeLokasiText}>
+              {PROFILE_DATA.lokasi}
+            </Text>
+          </View>
+
+          <Text style={profileStyles.bioText}>
+            {PROFILE_DATA.bio}
+          </Text>
+
+          {/* 3 KOLOM INFO SINGKAT */}
+          <View style={profileStyles.infoColumnsContainer}>
+            <View style={profileStyles.infoColumn}>
+              <Text style={profileStyles.infoColumnLabel}>
+                JAM OPERASIONAL
+              </Text>
+              <Text style={profileStyles.infoColumnValue}>
+                09.00 - 24.00 WIB
+              </Text>
+            </View>
+
+            <View style={profileStyles.infoColumn}>
+              <Text style={profileStyles.infoColumnLabel}>
+                SISTEM SEWA
+              </Text>
+              <Text style={profileStyles.infoColumnValue}>
+                Main di Tempat & Bawa Pulang
+              </Text>
+            </View>
+
+            <View style={profileStyles.infoColumn}>
+              <Text style={profileStyles.infoColumnLabel}>
+                AREA LAYANAN
+              </Text>
+              <Text style={profileStyles.infoColumnValue}>
+                Kota Malang & Sekitarnya
+              </Text>
+            </View>
+          </View>
+        </View>
       </View>
 
+      {/* TAB NAVIGASI */}
       <View style={profileStyles.tabContainer}>
         <TouchableOpacity
           style={[
@@ -127,6 +167,7 @@ export default function Index() {
               profileStyles.tabButtonActive,
           ]}
           onPress={() => setActiveProfileTab('keahlian')}
+          activeOpacity={0.85}
         >
           <Text
             style={[
@@ -135,7 +176,7 @@ export default function Index() {
                 profileStyles.tabTextActive,
             ]}
           >
-            Keahlian
+            Fasilitas & Unit
           </Text>
         </TouchableOpacity>
 
@@ -146,6 +187,7 @@ export default function Index() {
               profileStyles.tabButtonActive,
           ]}
           onPress={() => setActiveProfileTab('pengalaman')}
+          activeOpacity={0.85}
         >
           <Text
             style={[
@@ -154,30 +196,54 @@ export default function Index() {
                 profileStyles.tabTextActive,
             ]}
           >
-            Pengalaman
+            Keunggulan Layanan
           </Text>
         </TouchableOpacity>
       </View>
 
+      {/* TAB CONTENT GRID */}
       <View style={profileStyles.contentSection}>
         {activeProfileTab === 'keahlian' ? (
           <View style={profileStyles.gridContainer}>
-            {SKILLS_DATA.map((skill: SkillItem) => (
-              <View
-                key={skill.id}
-                style={profileStyles.cardItem}
-              >
-                <Text style={profileStyles.cardTitle}>
-                  {skill.nama}
-                </Text>
+            {SKILLS_DATA.map((skill: SkillItem, index: number) => {
+              const formattedIndex = String(index + 1).padStart(2, '0');
+              return (
+                <View
+                  key={skill.id}
+                  style={[
+                    profileStyles.cardItem,
+                    isDesktop
+                      ? profileStyles.cardItemDesktop
+                      : profileStyles.cardItemMobile,
+                  ]}
+                >
+                  <View style={profileStyles.cardItemLeft}>
+                    <View style={profileStyles.indexBox}>
+                      <Text style={profileStyles.indexText}>
+                        {formattedIndex}
+                      </Text>
+                    </View>
 
-                <View style={profileStyles.badgeTingkat}>
-                  <Text style={profileStyles.badgeTingkatText}>
-                    {skill.tingkat}
-                  </Text>
+                    <View style={profileStyles.cardItemTextContent}>
+                      <Text style={profileStyles.cardTitle}>
+                        {skill.nama}
+                      </Text>
+                      {skill.deskripsi && (
+                        <Text style={profileStyles.cardSubtitle}>
+                          {skill.deskripsi}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+
+                  <View style={profileStyles.badgeTingkat}>
+                    <Text style={profileStyles.badgeTingkatText}>
+                      {skill.tingkat}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
         ) : (
           <View style={profileStyles.listContainer}>
@@ -217,7 +283,7 @@ export default function Index() {
     <SafeAreaView style={styles.container}>
       <StatusBar
         barStyle="light-content"
-        backgroundColor="#0A0C10"
+        backgroundColor="#0071DC"
       />
 
       {/* HEADER */}
@@ -225,10 +291,9 @@ export default function Index() {
         <View style={styles.topHeaderBar}>
           <View style={styles.brandContainer}>
             <Image
-              source={{
-                uri: 'https://cdn-icons-png.flaticon.com/512/5260/5260498.png',
-              }}
+              source={require('@/assets/images/logo.png')}
               style={styles.logoImage}
+              resizeMode="contain"
             />
 
             <View style={styles.brandTitleContainer}>
@@ -249,15 +314,17 @@ export default function Index() {
                 styles.hamburgerButtonActive,
             ]}
             onPress={toggleMenu}
+            activeOpacity={0.85}
           >
             <Text style={styles.hamburgerText}>
-              ⋮
+              {isMenuOpen ? '✕' : '☰'}
             </Text>
           </TouchableOpacity>
         </View>
 
+        {/* FLOATING DROPDOWN MENU */}
         {isMenuOpen && (
-          <View style={styles.dropdownMenu}>
+          <View style={styles.floatingDropdownMenu}>
             {menuItems.map((item) => (
               <TouchableOpacity
                 key={item}
@@ -269,6 +336,7 @@ export default function Index() {
                   activeMenu === item &&
                     styles.dropdownItemActive,
                 ]}
+                activeOpacity={0.7}
               >
                 <Text
                   style={[
@@ -289,6 +357,7 @@ export default function Index() {
       <ScrollView
         ref={scrollRef}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ backgroundColor: '#F4F6F9', flexGrow: 1 }}
       >
         {activeMenu === 'Tentang' ? (
           aboutContent
@@ -298,6 +367,7 @@ export default function Index() {
 
             {/* BOOKING FORM - ANGGOTA 3 */}
             <View
+              style={{ maxWidth: 680, width: '100%', alignSelf: 'center' }}
               onLayout={(event) => {
                 setBookingY(
                   event.nativeEvent.layout.y,
