@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Alert, useWindowDimensions } from 'react-native';
+import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { PaketRental } from '../../types/rental';
 import { DAFTAR_PAKET } from '../../constants/rental';
 import { rentalStyles as styles } from '../../styles/rental';
@@ -8,23 +8,26 @@ export interface BerandaRentalProps {
   onPesanSekarang?: () => void;
   onLihatPaket?: () => void;
   onPaketSectionLayout?: (y: number) => void;
+  selectedPaket?: PaketRental | null;
+  onSelectPaket?: (paket: PaketRental) => void;
 }
 
 export const BerandaRental: React.FC<BerandaRentalProps> = ({
   onPesanSekarang,
   onLihatPaket,
   onPaketSectionLayout,
+  selectedPaket,
+  onSelectPaket,
 }) => {
-  const [selectedPaketId, setSelectedPaketId] = useState<string | null>(null);
+  const [internalSelectedPaketId, setInternalSelectedPaketId] = useState<string | null>(null);
   const { width } = useWindowDimensions();
   const isDesktop = width >= 640;
 
+  const currentSelectedId = selectedPaket !== undefined ? selectedPaket?.id : internalSelectedPaketId;
+
   const handlePilihPaket = (paket: PaketRental) => {
-    setSelectedPaketId(paket.id);
-    Alert.alert(
-      'Sukses',
-      `Anda memilih ${paket.namaPaket} - Rp ${paket.harga.toLocaleString('id-ID')}`
-    );
+    setInternalSelectedPaketId(paket.id);
+    onSelectPaket?.(paket);
   };
 
   const formatRupiah = (angka: number): string =>
@@ -100,7 +103,7 @@ export const BerandaRental: React.FC<BerandaRentalProps> = ({
 
         <View style={styles.paketGrid}>
           {DAFTAR_PAKET.map((paket) => {
-            const isSelected = selectedPaketId === paket.id;
+            const isSelected = currentSelectedId === paket.id;
             return (
               <View
                 key={paket.id}

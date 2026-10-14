@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { BookingData } from "./BookingForm";
+import { hitungBatasPengembalian } from "../utils/rentalDate";
 
 interface BookingResultProps {
   bookingData: BookingData | null;
@@ -18,6 +19,11 @@ export default function BookingResult({ bookingData }: BookingResultProps) {
     setStatus("Booking Dikonfirmasi");
     alert("Booking berhasil dikonfirmasi!");
   };
+
+  const deadlineText = bookingData
+    ? bookingData.batasPengembalian ||
+      hitungBatasPengembalian(bookingData.tanggal, bookingData.paket.durasi)
+    : null;
 
   // ==========================================
   // JIKA BELUM ADA BOOKING
@@ -96,6 +102,15 @@ export default function BookingResult({ bookingData }: BookingResultProps) {
           <Text style={styles.detailLabel}>Tanggal Sewa</Text>
           <Text style={styles.detailValue}>{bookingData.tanggal}</Text>
         </View>
+
+        {deadlineText && (
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Batas Pengembalian</Text>
+            <Text style={[styles.detailValue, styles.deadlineToReturn]}>
+              {deadlineText}
+            </Text>
+          </View>
+        )}
 
         {bookingData.catatan !== "" && (
           <View style={styles.noteContainer}>
@@ -296,6 +311,11 @@ const styles = StyleSheet.create({
     color: "#0F172A",
     flex: 1.5,
     textAlign: "right",
+  },
+
+  deadlineToReturn: {
+    color: "#00439C",
+    fontWeight: "800",
   },
 
   noteContainer: {

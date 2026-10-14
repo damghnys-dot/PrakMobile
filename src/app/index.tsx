@@ -13,6 +13,7 @@ import {
 import {
   SkillItem,
   PengalamanItem,
+  PaketRental,
 } from '../types/rental';
 
 import {
@@ -43,6 +44,9 @@ export default function Index() {
 
   const [activeProfileTab, setActiveProfileTab] =
     useState<'keahlian' | 'pengalaman'>('keahlian');
+
+  const [selectedPaket, setSelectedPaket] =
+    useState<PaketRental | null>(null);
 
   const [bookingData, setBookingData] =
     useState<BookingData | null>(null);
@@ -112,6 +116,15 @@ export default function Index() {
         animated: true,
       });
     }
+  };
+
+  const handleSelectPaketFromBeranda = (paket: PaketRental) => {
+    setSelectedPaket(paket);
+    scrollToBooking();
+  };
+
+  const handleSelectPaketFromBooking = (paket: PaketRental) => {
+    setSelectedPaket(paket);
   };
 
   const handleBookingSuccess = (data: BookingData) => {
@@ -390,6 +403,8 @@ export default function Index() {
               onPesanSekarang={scrollToBooking}
               onLihatPaket={scrollToPaket}
               onPaketSectionLayout={(y) => setPaketY(y)}
+              selectedPaket={selectedPaket}
+              onSelectPaket={handleSelectPaketFromBeranda}
             />
 
             <View
@@ -404,6 +419,8 @@ export default function Index() {
                 daftarPaket={
                   DAFTAR_PAKET
                 }
+                selectedPaket={selectedPaket}
+                onSelectPaket={handleSelectPaketFromBooking}
                 onBookingSuccess={
                   handleBookingSuccess
                 }

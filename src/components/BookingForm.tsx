@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,16 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
+import { PaketRental } from '../types/rental';
+import {
+  parseIndonesianDate,
+  formatTanggalIndonesia,
+  hitungBatasPengembalian,
+} from '../utils/rentalDate';
 
-export type PaketRental = {
-  id: string;
-  namaPaket: string;
-  konsol: 'PS4' | 'PS5';
-  harga: number;
-  durasi: string;
-  fitur: string[];
-  isPopuler?: boolean;
-};
+export type { PaketRental };
 
 export type BookingData = {
   nama: string;
@@ -23,15 +21,20 @@ export type BookingData = {
   paket: PaketRental;
   tanggal: string;
   catatan: string;
+  batasPengembalian?: string;
 };
 
 interface BookingFormProps {
   daftarPaket: PaketRental[];
+  selectedPaket?: PaketRental | null;
+  onSelectPaket?: (paket: PaketRental) => void;
   onBookingSuccess: (data: BookingData) => void;
 }
 
 export default function BookingForm({
   daftarPaket,
+  selectedPaket,
+  onSelectPaket,
   onBookingSuccess,
 }: BookingFormProps) {
   const [nama, setNama] = useState('');
@@ -40,11 +43,27 @@ export default function BookingForm({
   const [catatan, setCatatan] = useState('');
 
   const [paketTerpilih, setPaketTerpilih] =
-    useState<PaketRental | null>(null);
+    useState<PaketRental | null>(selectedPaket ?? null);
 
   const [showPaket, setShowPaket] = useState(false);
 
   const [error, setError] = useState('');
+
+  const parsedTanggal = parseIndonesianDate(tanggal);
+  const estimasiPengembalian =
+    paketTerpilih && parsedTanggal
+      ? hitungBatasPengembalian(parsedTanggal, paketTerpilih.durasi)
+      : null;
+
+  useEffect(() => {
+    if (selectedPaket) {
+      setPaketTerpilih(selectedPaket);
+      setShowPaket(false);
+      setError('');
+    } else if (selectedPaket === null) {
+      setPaketTerpilih(null);
+    }
+  }, [selectedPaket]);
 
   const formatRupiah = (angka: number) => {
     return `Rp ${angka.toLocaleString('id-ID')}`;
@@ -54,6 +73,7 @@ export default function BookingForm({
     setPaketTerpilih(paket);
     setShowPaket(false);
     setError('');
+    onSelectPaket?.(paket);
   };
 
   const handleBooking = () => {
@@ -77,12 +97,21 @@ export default function BookingForm({
       return;
     }
 
+    const validDate = parseIndonesianDate(tanggal);
+    const formattedTanggal = validDate
+      ? formatTanggalIndonesia(validDate)
+      : tanggal.trim();
+
+    const batasPengembalian =
+      hitungBatasPengembalian(validDate ?? tanggal, paketTerpilih.durasi) ?? undefined;
+
     const bookingData: BookingData = {
       nama,
       whatsapp,
       paket: paketTerpilih,
-      tanggal,
+      tanggal: formattedTanggal,
       catatan,
+      batasPengembalian,
     };
 
     onBookingSuccess(bookingData);
@@ -147,9 +176,10 @@ export default function BookingForm({
                 styles.selectText,
                 !paketTerpilih && styles.placeholderText,
               ]}
+              numberOfLines={1}
             >
               {paketTerpilih
-                ? paketTerpilih.namaPaket
+                ? `${paketTerpilih.namaPaket} - ${formatRupiah(paketTerpilih.harga)}`
                 : 'Pilih paket rental'}
             </Text>
 
@@ -248,6 +278,14 @@ export default function BookingForm({
             value={tanggal}
             onChangeText={setTanggal}
           />
+
+          {estimasiPengembalian && (
+            <View style={styles.estimateContainer}>
+              <Text style={styles.estimateText}>
+                Estimasi Pengembalian: {estimasiPengembalian}
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* CATATAN */}
@@ -526,5 +564,16 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '700',
+  },
+
+  estimateContainer: {
+    marginTop: 6,
+    paddingHorizontal: 2,
+  },
+
+  estimateText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#0071DC',
   },
 });
