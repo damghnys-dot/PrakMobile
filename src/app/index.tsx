@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import {
   Text,
   View,
@@ -79,6 +80,18 @@ export default function Index() {
       });
     }
   };
+
+  const { selectedPaketId } = useLocalSearchParams<{ selectedPaketId?: string }>();
+
+  useEffect(() => {
+    if (selectedPaketId) {
+      const found = DAFTAR_PAKET.find((p) => p.id === selectedPaketId);
+      if (found) {
+        setSelectedPaket(found);
+        scrollToBooking();
+      }
+    }
+  }, [selectedPaketId]);
 
   const scrollToPaket = () => {
     const targetY = paketY > 0 ? paketY : 380;
