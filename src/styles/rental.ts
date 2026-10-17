@@ -269,7 +269,29 @@ export const rentalStyles = StyleSheet.create({
     color: "#475569",
     lineHeight: 18,
   },
+  cardActionsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 8,
+  },
+  btnDetail: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1.5,
+    borderColor: "#0071DC",
+    paddingVertical: 11,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btnDetailText: {
+    color: "#0071DC",
+    fontSize: 13,
+    fontWeight: "700",
+  },
   btnPilih: {
+    flex: 1,
     backgroundColor: "#0071DC",
     paddingVertical: 12,
     borderRadius: 8,
@@ -281,7 +303,7 @@ export const rentalStyles = StyleSheet.create({
   },
   btnPilihText: {
     color: "#FFFFFF",
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "700",
   },
 });

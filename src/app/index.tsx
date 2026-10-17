@@ -69,7 +69,7 @@ export default function Index() {
       setActiveMenu('Beranda');
       setTimeout(() => {
         scrollRef.current?.scrollTo({
-          y: targetY,
+          y: bookingY > 0 ? bookingY : targetY,
           animated: true,
         });
       }, 100);
@@ -85,13 +85,20 @@ export default function Index() {
 
   useEffect(() => {
     if (selectedPaketId) {
-      const found = DAFTAR_PAKET.find((p) => p.id === selectedPaketId);
+      const paketIdStr = Array.isArray(selectedPaketId)
+        ? selectedPaketId[0]
+        : selectedPaketId;
+      const found = DAFTAR_PAKET.find(
+        (p) => String(p.id) === String(paketIdStr)
+      );
       if (found) {
         setSelectedPaket(found);
-        scrollToBooking();
+        setTimeout(() => {
+          scrollToBooking();
+        }, 150);
       }
     }
-  }, [selectedPaketId]);
+  }, [selectedPaketId, bookingY]);
 
   const scrollToPaket = () => {
     const targetY = paketY > 0 ? paketY : 380;

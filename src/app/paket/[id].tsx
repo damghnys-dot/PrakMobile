@@ -10,7 +10,7 @@ import {
   useWindowDimensions,
   Platform,
 } from 'react-native';
-import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { DAFTAR_PAKET } from '../../constants/rental';
 import { PaketRental } from '../../types/rental';
 
@@ -18,9 +18,9 @@ export default function DetailPaketScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  // Cari data paket dari DAFTAR_PAKET berdasarkan id
+  // Cari data paket dari DAFTAR_PAKET berdasarkan id (perbandingan aman String)
   const paket: PaketRental | undefined = DAFTAR_PAKET.find(
-    (item) => item.id === id
+    (item) => String(item.id) === String(id)
   );
 
   const { width } = useWindowDimensions();
@@ -38,12 +38,12 @@ export default function DetailPaketScreen() {
     }
   };
 
-  // Navigasi Tombol 2: Pesan Paket Ini Sekarang
-  const handlePesanSekarang = () => {
+  // Navigasi Tombol 2: Pilih & Pesan Paket Ini
+  const handlePilihPaket = () => {
     if (!paket) return;
     router.replace({
       pathname: '/',
-      params: { selectedPaketId: paket.id },
+      params: { selectedPaketId: String(paket.id) },
     });
   };
 
@@ -51,17 +51,11 @@ export default function DetailPaketScreen() {
   if (!paket) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <Stack.Screen
-          options={{
-            title: 'Paket Tidak Ditemukan',
-            headerShown: false,
-          }}
-        />
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <StatusBar barStyle="light-content" backgroundColor="#0071DC" />
         <View style={styles.notFoundContainer}>
           <View style={styles.notFoundCard}>
             <View style={styles.notFoundIconContainer}>
-              <Text style={styles.notFoundIcon}>⚠️</Text>
+              <Text style={styles.notFoundIconText}>!</Text>
             </View>
             <Text style={styles.notFoundTitle}>Paket Tidak Ditemukan</Text>
             <Text style={styles.notFoundText}>
@@ -85,31 +79,7 @@ export default function DetailPaketScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Stack.Screen
-        options={{
-          title: paket.namaPaket,
-          headerShown: false,
-        }}
-      />
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
-      {/* Header Bar */}
-      <View style={styles.headerBar}>
-        <View style={styles.headerInner}>
-          <TouchableOpacity
-            style={styles.headerBackButton}
-            onPress={handleKembali}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.headerBackArrow}>‹</Text>
-            <Text style={styles.headerBackText}>Kembali</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle} numberOfLines={1}>
-            Detail Paket Rental
-          </Text>
-          <View style={{ width: 68 }} />
-        </View>
-      </View>
+      <StatusBar barStyle="light-content" backgroundColor="#0071DC" />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -142,7 +112,7 @@ export default function DetailPaketScreen() {
 
               {paket.isPopuler && (
                 <View style={styles.badgePopuler}>
-                  <Text style={styles.badgePopulerText}>🔥 Terpopuler</Text>
+                  <Text style={styles.badgePopulerText}>Terpopuler</Text>
                 </View>
               )}
             </View>
@@ -165,9 +135,7 @@ export default function DetailPaketScreen() {
           {/* Section: Fasilitas Paket */}
           <View style={styles.sectionCard}>
             <View style={styles.sectionHeaderRow}>
-              <View style={styles.sectionIconCircle}>
-                <Text style={styles.sectionIconText}>🎁</Text>
-              </View>
+              <View style={styles.sectionAccentBar} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.sectionTitle}>Fasilitas Paket</Text>
                 <Text style={styles.sectionSubtitle}>
@@ -191,12 +159,10 @@ export default function DetailPaketScreen() {
           {/* Section: Spesifikasi Konsol */}
           <View style={styles.sectionCard}>
             <View style={styles.sectionHeaderRow}>
-              <View style={styles.sectionIconCircle}>
-                <Text style={styles.sectionIconText}>🎮</Text>
-              </View>
+              <View style={styles.sectionAccentBar} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.sectionTitle}>
-                  Spesifikasi &amp; Performa Unit {paket.konsol}
+                  Spesifikasi & Performa Unit {paket.konsol}
                 </Text>
                 <Text style={styles.sectionSubtitle}>
                   Kondisi prima siap pakai untuk pengalaman gaming maksimal
@@ -206,7 +172,7 @@ export default function DetailPaketScreen() {
 
             <View style={styles.specGrid}>
               <View style={styles.specItem}>
-                <Text style={styles.specLabel}>Visual &amp; Resolusi</Text>
+                <Text style={styles.specLabel}>Visual & Resolusi</Text>
                 <Text style={styles.specValue}>
                   {isPS5
                     ? 'Mendukung hingga 4K HDR 120Hz, visual ultra jernih & mulus'
@@ -224,7 +190,7 @@ export default function DetailPaketScreen() {
               </View>
 
               <View style={styles.specItem}>
-                <Text style={styles.specLabel}>Kapasitas &amp; Storage</Text>
+                <Text style={styles.specLabel}>Kapasitas & Storage</Text>
                 <Text style={styles.specValue}>
                   {isPS5
                     ? 'Ultra-High Speed Custom SSD NVMe loading sekejap mata'
@@ -235,7 +201,7 @@ export default function DetailPaketScreen() {
               <View style={styles.specItem}>
                 <Text style={styles.specLabel}>Game Terinstal</Text>
                 <Text style={styles.specValue}>
-                  Bebas pilih &amp; request game populer: EA Sports FC 25 / FIFA,
+                  Bebas pilih & request game populer: EA Sports FC 25 / FIFA,
                   eFootball, GTA V, Marvel&apos;s Spider-Man, Mortal Kombat, God of
                   War, dll.
                 </Text>
@@ -246,11 +212,9 @@ export default function DetailPaketScreen() {
           {/* Section: Syarat & Ketentuan Sewa */}
           <View style={styles.sectionCard}>
             <View style={styles.sectionHeaderRow}>
-              <View style={styles.sectionIconCircle}>
-                <Text style={styles.sectionIconText}>📋</Text>
-              </View>
+              <View style={styles.sectionAccentBar} />
               <View style={{ flex: 1 }}>
-                <Text style={styles.sectionTitle}>Syarat &amp; Ketentuan Sewa</Text>
+                <Text style={styles.sectionTitle}>Syarat & Ketentuan Sewa</Text>
                 <Text style={styles.sectionSubtitle}>
                   Aturan sewa demi keamanan dan kenyamanan bersama
                 </Text>
@@ -262,7 +226,7 @@ export default function DetailPaketScreen() {
                 <Text style={styles.syaratNumber}>1</Text>
                 <Text style={styles.syaratText}>
                   <Text style={styles.syaratBold}>Jaminan Identitas: </Text>
-                  Wajib menunjukkan &amp; menyerahkan KTP atau KTM asli yang masih
+                  Wajib menunjukkan & menyerahkan KTP atau KTM asli yang masih
                   aktif selama masa sewa sebagai jaminan.
                 </Text>
               </View>
@@ -288,7 +252,7 @@ export default function DetailPaketScreen() {
               <View style={styles.syaratItem}>
                 <Text style={styles.syaratNumber}>4</Text>
                 <Text style={styles.syaratText}>
-                  <Text style={styles.syaratBold}>Durasi &amp; Pengembalian: </Text>
+                  <Text style={styles.syaratBold}>Durasi & Pengembalian: </Text>
                   Unit wajib dikembalikan tepat waktu sesuai durasi sewa (
                   {paket.durasi}) sejak unit diterima.
                 </Text>
@@ -321,14 +285,14 @@ export default function DetailPaketScreen() {
               <Text style={styles.secondaryButtonText}>Kembali</Text>
             </TouchableOpacity>
 
-            {/* Tombol 2: Pesan Paket Ini Sekarang */}
+            {/* Tombol 2: Pilih & Pesan Paket Ini */}
             <TouchableOpacity
               style={styles.primaryButton}
-              onPress={handlePesanSekarang}
+              onPress={handlePilihPaket}
               activeOpacity={0.85}
             >
               <Text style={styles.primaryButtonText}>
-                Pesan Paket Ini Sekarang
+                Pilih & Pesan Paket Ini
               </Text>
             </TouchableOpacity>
           </View>
@@ -342,59 +306,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#F8FAFC',
-  },
-  headerBar: {
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 2,
-      },
-      web: {
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-      },
-    }),
-  },
-  headerInner: {
-    maxWidth: 680,
-    width: '100%',
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerBackButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 4,
-    paddingRight: 8,
-  },
-  headerBackArrow: {
-    fontSize: 26,
-    color: '#0071DC',
-    fontWeight: '300',
-    lineHeight: 28,
-    marginRight: 4,
-  },
-  headerBackText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#0071DC',
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#0F172A',
-    textAlign: 'center',
   },
   scrollContent: {
     paddingVertical: 20,
@@ -412,20 +323,11 @@ const styles = StyleSheet.create({
     padding: 24,
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#0071DC',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.06,
-        shadowRadius: 10,
-      },
-      android: {
-        elevation: 2,
-      },
-      web: {
-        boxShadow: '0 4px 14px rgba(0, 113, 220, 0.08)',
-      },
-    }),
+    shadowColor: '#0071DC',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 3,
   },
   badgesRow: {
     flexDirection: 'row',
@@ -523,20 +425,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.04,
-        shadowRadius: 6,
-      },
-      android: {
-        elevation: 1,
-      },
-      web: {
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-      },
-    }),
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   sectionHeaderRow: {
     flexDirection: 'row',
@@ -547,16 +440,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
   },
-  sectionIconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#EBF3FC',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sectionIconText: {
-    fontSize: 18,
+  sectionAccentBar: {
+    width: 4,
+    height: 36,
+    borderRadius: 2,
+    backgroundColor: '#0071DC',
   },
   sectionTitle: {
     fontSize: 17,
@@ -691,20 +579,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#0071DC',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 6,
-      },
-      android: {
-        elevation: 3,
-      },
-      web: {
-        boxShadow: '0 4px 12px rgba(0, 113, 220, 0.3)',
-      },
-    }),
+    shadowColor: '#0071DC',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
   },
   primaryButtonText: {
     color: '#FFFFFF',
@@ -728,16 +607,18 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
   },
   notFoundIconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#FEF3C7',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#EBF3FC',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
   },
-  notFoundIcon: {
-    fontSize: 32,
+  notFoundIconText: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#0071DC',
   },
   notFoundTitle: {
     fontSize: 20,

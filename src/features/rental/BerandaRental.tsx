@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { useRouter } from 'expo-router';
 import { PaketRental } from '../../types/rental';
 import { DAFTAR_PAKET } from '../../constants/rental';
 import { rentalStyles as styles } from '../../styles/rental';
@@ -19,6 +20,7 @@ export const BerandaRental: React.FC<BerandaRentalProps> = ({
   selectedPaket,
   onSelectPaket,
 }) => {
+  const router = useRouter();
   const [internalSelectedPaketId, setInternalSelectedPaketId] = useState<string | null>(null);
   const { width } = useWindowDimensions();
   const isDesktop = width >= 640;
@@ -144,15 +146,25 @@ export const BerandaRental: React.FC<BerandaRentalProps> = ({
                   </View>
                 </View>
 
-                <TouchableOpacity
-                  style={[styles.btnPilih, isSelected && styles.btnPilihActive]}
-                  onPress={() => handlePilihPaket(paket)}
-                  activeOpacity={0.85}
-                >
-                  <Text style={styles.btnPilihText}>
-                    {isSelected ? '✓ Terpilih' : 'Pilih Paket'}
-                  </Text>
-                </TouchableOpacity>
+                <View style={styles.cardActionsContainer}>
+                  <TouchableOpacity
+                    style={styles.btnDetail}
+                    onPress={() => router.push(`/paket/${paket.id}`)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.btnDetailText}>Lihat Detail</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.btnPilih, isSelected && styles.btnPilihActive]}
+                    onPress={() => handlePilihPaket(paket)}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.btnPilihText}>
+                      {isSelected ? '✓ Terpilih' : 'Pilih Paket'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             );
           })}
