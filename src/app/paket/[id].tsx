@@ -13,9 +13,11 @@ import {
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { DAFTAR_PAKET } from '../../constants/rental';
 import { PaketRental } from '../../types/rental';
+import { useRental } from '../../context/RentalContext';
 
 export default function DetailPaketScreen() {
   const router = useRouter();
+  const { setSelectedPaket } = useRental();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   // Cari data paket dari DAFTAR_PAKET berdasarkan id (perbandingan aman String)
@@ -41,6 +43,7 @@ export default function DetailPaketScreen() {
   // Navigasi Tombol 2: Pilih & Pesan Paket Ini
   const handlePilihPaket = () => {
     if (!paket) return;
+    setSelectedPaket(paket);
     router.replace({
       pathname: '/',
       params: { selectedPaketId: String(paket.id) },

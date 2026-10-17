@@ -151,7 +151,42 @@ export const rentalStyles = StyleSheet.create({
     fontSize: 13,
     color: "#475569",
     textAlign: "center",
-    marginBottom: 26,
+    marginBottom: 20,
+  },
+  filterContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: 10,
+    marginBottom: 24,
+  },
+  filterPill: {
+    paddingVertical: 9,
+    paddingHorizontal: 18,
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  filterPillActive: {
+    backgroundColor: "#0071DC",
+    borderWidth: 1.5,
+    borderColor: "#0071DC",
+  },
+  filterPillInactive: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1.5,
+    borderColor: "#CBD5E1",
+  },
+  filterPillText: {
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  filterPillTextActive: {
+    color: "#FFFFFF",
+  },
+  filterPillTextInactive: {
+    color: "#475569",
   },
   paketGrid: {
     flexDirection: "row",

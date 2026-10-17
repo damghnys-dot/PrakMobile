@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { PaketRental } from '../../types/rental';
 import { DAFTAR_PAKET } from '../../constants/rental';
 import { rentalStyles as styles } from '../../styles/rental';
+import { useRental } from '../../context/RentalContext';
 
 export interface BerandaRentalProps {
   onPesanSekarang?: () => void;
@@ -21,14 +22,33 @@ export const BerandaRental: React.FC<BerandaRentalProps> = ({
   onSelectPaket,
 }) => {
   const router = useRouter();
+  const { selectedPaket: contextSelectedPaket, setSelectedPaket: contextSetSelectedPaket } = useRental();
   const [internalSelectedPaketId, setInternalSelectedPaketId] = useState<string | null>(null);
+  const [filterKonsol, setFilterKonsol] = useState<'Semua' | 'PS4' | 'PS5'>('Semua');
   const { width } = useWindowDimensions();
   const isDesktop = width >= 640;
 
-  const currentSelectedId = selectedPaket !== undefined ? selectedPaket?.id : internalSelectedPaketId;
+  const filterOptions: { label: string; value: 'Semua' | 'PS4' | 'PS5' }[] = [
+    { label: 'Semua Paket', value: 'Semua' },
+    { label: 'Konsol PS4', value: 'PS4' },
+    { label: 'Konsol PS5', value: 'PS5' },
+  ];
+
+  // Implementasi useMemo untuk memfilter daftar paket berdasarkan kategori konsol
+  const filteredPaket = useMemo(() => {
+    if (filterKonsol === 'Semua') {
+      return DAFTAR_PAKET;
+    }
+    return DAFTAR_PAKET.filter((item) => item.konsol === filterKonsol);
+  }, [filterKonsol]);
+
+  const currentSelectedId = selectedPaket !== undefined
+    ? selectedPaket?.id
+    : (contextSelectedPaket?.id ?? internalSelectedPaketId);
 
   const handlePilihPaket = (paket: PaketRental) => {
     setInternalSelectedPaketId(paket.id);
+    contextSetSelectedPaket(paket);
     onSelectPaket?.(paket);
   };
 
@@ -103,8 +123,35 @@ export const BerandaRental: React.FC<BerandaRentalProps> = ({
         <Text style={styles.sectionTitle}>Pilihan Paket Spartan Rental</Text>
         <Text style={styles.sectionSubtitle}>Pilih paket yang sesuai dengan kebutuhan main kamu</Text>
 
+        {/* 3 Tombol Pill Filter: Semua Paket, Konsol PS4, Konsol PS5 */}
+        <View style={styles.filterContainer}>
+          {filterOptions.map((option) => {
+            const isActive = filterKonsol === option.value;
+            return (
+              <TouchableOpacity
+                key={option.value}
+                style={[
+                  styles.filterPill,
+                  isActive ? styles.filterPillActive : styles.filterPillInactive,
+                ]}
+                onPress={() => setFilterKonsol(option.value)}
+                activeOpacity={0.8}
+              >
+                <Text
+                  style={[
+                    styles.filterPillText,
+                    isActive ? styles.filterPillTextActive : styles.filterPillTextInactive,
+                  ]}
+                >
+                  {option.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
         <View style={styles.paketGrid}>
-          {DAFTAR_PAKET.map((paket) => {
+          {filteredPaket.map((paket) => {
             const isSelected = currentSelectedId === paket.id;
             return (
               <View

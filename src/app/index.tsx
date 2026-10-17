@@ -36,6 +36,7 @@ import BookingForm, {
 } from '../components/BookingForm';
 
 import BookingResult from '../components/BookingResult';
+import { useRental } from '../context/RentalContext';
 
 export default function Index() {
   const [activeMenu, setActiveMenu] = useState('Beranda');
@@ -46,8 +47,8 @@ export default function Index() {
   const [activeProfileTab, setActiveProfileTab] =
     useState<'keahlian' | 'pengalaman'>('keahlian');
 
-  const [selectedPaket, setSelectedPaket] =
-    useState<PaketRental | null>(null);
+  // Menggunakan global state dari RentalContext
+  const { selectedPaket, setSelectedPaket } = useRental();
 
   const [bookingData, setBookingData] =
     useState<BookingData | null>(null);
