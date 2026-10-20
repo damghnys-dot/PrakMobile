@@ -8,7 +8,6 @@ import {
   StatusBar,
   TouchableOpacity,
   useWindowDimensions,
-  Platform,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { DAFTAR_PAKET } from '../../constants/rental';

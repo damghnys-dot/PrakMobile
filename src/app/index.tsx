@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import {
   Text,
@@ -64,7 +64,7 @@ export default function Index() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const scrollToBooking = () => {
+  const scrollToBooking = useCallback(() => {
     const targetY = bookingY > 0 ? bookingY : 800;
     if (activeMenu === 'Tentang') {
       setActiveMenu('Beranda');
@@ -80,7 +80,7 @@ export default function Index() {
         animated: true,
       });
     }
-  };
+  }, [activeMenu, bookingY]);
 
   const { selectedPaketId } = useLocalSearchParams<{ selectedPaketId?: string }>();
 
@@ -99,7 +99,7 @@ export default function Index() {
         }, 150);
       }
     }
-  }, [selectedPaketId, bookingY]);
+  }, [selectedPaketId, bookingY, scrollToBooking, setSelectedPaket]);
 
   const scrollToPaket = () => {
     const targetY = paketY > 0 ? paketY : 380;

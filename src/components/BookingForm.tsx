@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -42,8 +42,10 @@ export default function BookingForm({
   const [tanggal, setTanggal] = useState('');
   const [catatan, setCatatan] = useState('');
 
-  const [paketTerpilih, setPaketTerpilih] =
+  const [paketLokal, setPaketLokal] =
     useState<PaketRental | null>(selectedPaket ?? null);
+  const paketTerpilih =
+    selectedPaket === undefined ? paketLokal : selectedPaket;
 
   const [showPaket, setShowPaket] = useState(false);
 
@@ -55,22 +57,14 @@ export default function BookingForm({
       ? hitungBatasPengembalian(parsedTanggal, paketTerpilih.durasi)
       : null;
 
-  useEffect(() => {
-    if (selectedPaket) {
-      setPaketTerpilih(selectedPaket);
-      setShowPaket(false);
-      setError('');
-    } else if (selectedPaket === null) {
-      setPaketTerpilih(null);
-    }
-  }, [selectedPaket]);
-
   const formatRupiah = (angka: number) => {
     return `Rp ${angka.toLocaleString('id-ID')}`;
   };
 
   const handlePilihPaket = (paket: PaketRental) => {
-    setPaketTerpilih(paket);
+    if (selectedPaket === undefined) {
+      setPaketLokal(paket);
+    }
     setShowPaket(false);
     setError('');
     onSelectPaket?.(paket);
