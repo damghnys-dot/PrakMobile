@@ -18,6 +18,24 @@ export default function RootLayout() {
             headerTitleStyle: { fontWeight: 'bold' },
           }}
         />
+        <Stack.Screen
+          name="ulasan"
+          options={{
+            title: "Ulasan & Cek Stok",
+            headerStyle: { backgroundColor: '#0071DC' },
+            headerTintColor: '#FFFFFF',
+            headerTitleStyle: { fontWeight: 'bold' },
+          }}
+        />
+        <Stack.Screen
+          name="profile"
+          options={{
+            title: "Profil Pengembang",
+            headerStyle: { backgroundColor: '#0071DC' },
+            headerTintColor: '#FFFFFF',
+            headerTitleStyle: { fontWeight: 'bold' },
+          }}
+        />
       </Stack>
     </RentalProvider>
   );
