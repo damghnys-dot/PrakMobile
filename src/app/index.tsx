@@ -1,73 +1,64 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
-  Text,
-  View,
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
-  Image,
+  Text,
   TouchableOpacity,
   useWindowDimensions,
-} from 'react-native';
+  View,
+} from "react-native";
+
+import { PaketRental, PengalamanItem, SkillItem } from "../types/rental";
 
 import {
-  SkillItem,
-  PengalamanItem,
-  PaketRental,
-} from '../types/rental';
-
-import {
+  DAFTAR_PAKET,
+  PENGALAMAN_DATA,
   PROFILE_DATA,
   SKILLS_DATA,
-  PENGALAMAN_DATA,
-  DAFTAR_PAKET,
-} from '../constants/rental';
+} from "../constants/rental";
 
-import {
-  rentalHeaderStyles as styles,
-  profileStyles,
-} from '../styles/rental';
+import { profileStyles, rentalHeaderStyles as styles } from "../styles/rental";
 
-import { BerandaRental } from '../features/rental/BerandaRental';
+import { BerandaRental } from "../features/rental/BerandaRental";
 
-import BookingForm, {
-  BookingData,
-} from '../components/BookingForm';
+import BookingForm, { BookingData } from "../components/BookingForm";
 
-import BookingResult from '../components/BookingResult';
-import { useRental } from '../context/RentalContext';
+import BookingResult from "../components/BookingResult";
+import { useRental } from "../context/RentalContext";
 
 export default function Index() {
-  const [activeMenu, setActiveMenu] = useState('Beranda');
+  const router = useRouter();
+  const [activeMenu, setActiveMenu] = useState("Beranda");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { width } = useWindowDimensions();
   const isDesktop = width >= 640;
 
-  const [activeProfileTab, setActiveProfileTab] =
-    useState<'keahlian' | 'pengalaman'>('keahlian');
+  const [activeProfileTab, setActiveProfileTab] = useState<
+    "keahlian" | "pengalaman"
+  >("keahlian");
 
-  // Menggunakan global state dari RentalContext
   const { selectedPaket, setSelectedPaket } = useRental();
 
-  const [bookingData, setBookingData] =
-    useState<BookingData | null>(null);
+  const [bookingData, setBookingData] = useState<BookingData | null>(null);
 
   const scrollRef = useRef<ScrollView>(null);
 
   const [bookingY, setBookingY] = useState(0);
   const [paketY, setPaketY] = useState(0);
 
-  const menuItems = ['Beranda', 'Tentang', 'Paket'];
+  const menuItems = ["Beranda", "Tentang", "Paket"];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const scrollToBooking = useCallback(() => {
+  const scrollToBooking = () => {
     const targetY = bookingY > 0 ? bookingY : 800;
-    if (activeMenu === 'Tentang') {
-      setActiveMenu('Beranda');
+    if (activeMenu === "Tentang") {
+      setActiveMenu("Beranda");
       setTimeout(() => {
         scrollRef.current?.scrollTo({
           y: bookingY > 0 ? bookingY : targetY,
@@ -80,9 +71,11 @@ export default function Index() {
         animated: true,
       });
     }
-  }, [activeMenu, bookingY]);
+  };
 
-  const { selectedPaketId } = useLocalSearchParams<{ selectedPaketId?: string }>();
+  const { selectedPaketId } = useLocalSearchParams<{
+    selectedPaketId?: string;
+  }>();
 
   useEffect(() => {
     if (selectedPaketId) {
@@ -90,7 +83,7 @@ export default function Index() {
         ? selectedPaketId[0]
         : selectedPaketId;
       const found = DAFTAR_PAKET.find(
-        (p) => String(p.id) === String(paketIdStr)
+        (p) => String(p.id) === String(paketIdStr),
       );
       if (found) {
         setSelectedPaket(found);
@@ -99,12 +92,12 @@ export default function Index() {
         }, 150);
       }
     }
-  }, [selectedPaketId, bookingY, scrollToBooking, setSelectedPaket]);
+  }, [selectedPaketId, bookingY]);
 
   const scrollToPaket = () => {
     const targetY = paketY > 0 ? paketY : 380;
-    if (activeMenu === 'Tentang') {
-      setActiveMenu('Beranda');
+    if (activeMenu === "Tentang") {
+      setActiveMenu("Beranda");
       setTimeout(() => {
         scrollRef.current?.scrollTo({
           y: targetY,
@@ -122,16 +115,16 @@ export default function Index() {
   const handleSelectMenu = (item: string) => {
     setIsMenuOpen(false);
 
-    if (item === 'Beranda') {
-      setActiveMenu('Beranda');
+    if (item === "Beranda") {
+      setActiveMenu("Beranda");
       scrollRef.current?.scrollTo({
         y: 0,
         animated: true,
       });
-    } else if (item === 'Paket') {
+    } else if (item === "Paket") {
       scrollToPaket();
-    } else if (item === 'Tentang') {
-      setActiveMenu('Tentang');
+    } else if (item === "Tentang") {
+      setActiveMenu("Tentang");
       scrollRef.current?.scrollTo({
         y: 0,
         animated: true,
@@ -166,18 +159,12 @@ export default function Index() {
 
         <View style={profileStyles.profileCardBody}>
           <View style={profileStyles.badgePartner}>
-            <Text style={profileStyles.badgePartnerText}>
-              TENTANG KAMI
-            </Text>
+            <Text style={profileStyles.badgePartnerText}>TENTANG KAMI</Text>
           </View>
 
-          <Text style={profileStyles.namaText}>
-            {PROFILE_DATA.nama}
-          </Text>
+          <Text style={profileStyles.namaText}>{PROFILE_DATA.nama}</Text>
 
-          <Text style={profileStyles.sebutanText}>
-            {PROFILE_DATA.sebutan}
-          </Text>
+          <Text style={profileStyles.sebutanText}>{PROFILE_DATA.sebutan}</Text>
 
           <View style={profileStyles.badgeLokasi}>
             <Text style={profileStyles.badgeLokasiText}>
@@ -185,33 +172,25 @@ export default function Index() {
             </Text>
           </View>
 
-          <Text style={profileStyles.bioText}>
-            {PROFILE_DATA.bio}
-          </Text>
+          <Text style={profileStyles.bioText}>{PROFILE_DATA.bio}</Text>
 
           <View style={profileStyles.infoColumnsContainer}>
             <View style={profileStyles.infoColumn}>
-              <Text style={profileStyles.infoColumnLabel}>
-                JAM OPERASIONAL
-              </Text>
+              <Text style={profileStyles.infoColumnLabel}>JAM OPERASIONAL</Text>
               <Text style={profileStyles.infoColumnValue}>
                 Buka 24 Jam (Setiap Hari)
               </Text>
             </View>
 
             <View style={profileStyles.infoColumn}>
-              <Text style={profileStyles.infoColumnLabel}>
-                SISTEM SEWA
-              </Text>
+              <Text style={profileStyles.infoColumnLabel}>SISTEM SEWA</Text>
               <Text style={profileStyles.infoColumnValue}>
                 Main di Tempat & Bawa Pulang
               </Text>
             </View>
 
             <View style={profileStyles.infoColumn}>
-              <Text style={profileStyles.infoColumnLabel}>
-                AREA LAYANAN
-              </Text>
+              <Text style={profileStyles.infoColumnLabel}>AREA LAYANAN</Text>
               <Text style={profileStyles.infoColumnValue}>
                 Kota Malang & Sekitarnya
               </Text>
@@ -224,17 +203,15 @@ export default function Index() {
         <TouchableOpacity
           style={[
             profileStyles.tabButton,
-            activeProfileTab === 'keahlian' &&
-              profileStyles.tabButtonActive,
+            activeProfileTab === "keahlian" && profileStyles.tabButtonActive,
           ]}
-          onPress={() => setActiveProfileTab('keahlian')}
+          onPress={() => setActiveProfileTab("keahlian")}
           activeOpacity={0.85}
         >
           <Text
             style={[
               profileStyles.tabText,
-              activeProfileTab === 'keahlian' &&
-                profileStyles.tabTextActive,
+              activeProfileTab === "keahlian" && profileStyles.tabTextActive,
             ]}
           >
             Fasilitas & Unit
@@ -244,17 +221,15 @@ export default function Index() {
         <TouchableOpacity
           style={[
             profileStyles.tabButton,
-            activeProfileTab === 'pengalaman' &&
-              profileStyles.tabButtonActive,
+            activeProfileTab === "pengalaman" && profileStyles.tabButtonActive,
           ]}
-          onPress={() => setActiveProfileTab('pengalaman')}
+          onPress={() => setActiveProfileTab("pengalaman")}
           activeOpacity={0.85}
         >
           <Text
             style={[
               profileStyles.tabText,
-              activeProfileTab === 'pengalaman' &&
-                profileStyles.tabTextActive,
+              activeProfileTab === "pengalaman" && profileStyles.tabTextActive,
             ]}
           >
             Keunggulan Layanan
@@ -263,10 +238,10 @@ export default function Index() {
       </View>
 
       <View style={profileStyles.contentSection}>
-        {activeProfileTab === 'keahlian' ? (
+        {activeProfileTab === "keahlian" ? (
           <View style={profileStyles.gridContainer}>
             {SKILLS_DATA.map((skill: SkillItem, index: number) => {
-              const formattedIndex = String(index + 1).padStart(2, '0');
+              const formattedIndex = String(index + 1).padStart(2, "0");
               return (
                 <View
                   key={skill.id}
@@ -285,9 +260,7 @@ export default function Index() {
                     </View>
 
                     <View style={profileStyles.cardItemTextContent}>
-                      <Text style={profileStyles.cardTitle}>
-                        {skill.nama}
-                      </Text>
+                      <Text style={profileStyles.cardTitle}>{skill.nama}</Text>
                       {skill.deskripsi && (
                         <Text style={profileStyles.cardSubtitle}>
                           {skill.deskripsi}
@@ -307,32 +280,21 @@ export default function Index() {
           </View>
         ) : (
           <View style={profileStyles.listContainer}>
-            {PENGALAMAN_DATA.map(
-              (item: PengalamanItem) => (
-                <View
-                  key={item.id}
-                  style={profileStyles.cardPengalaman}
-                >
-                  <View style={profileStyles.cardHeader}>
-                    <Text style={profileStyles.peranText}>
-                      {item.peran}
-                    </Text>
+            {PENGALAMAN_DATA.map((item: PengalamanItem) => (
+              <View key={item.id} style={profileStyles.cardPengalaman}>
+                <View style={profileStyles.cardHeader}>
+                  <Text style={profileStyles.peranText}>{item.peran}</Text>
 
-                    <Text style={profileStyles.tahunText}>
-                      {item.tahun}
-                    </Text>
-                  </View>
-
-                  <Text style={profileStyles.instansiText}>
-                    {item.instansi}
-                  </Text>
-
-                  <Text style={profileStyles.deskripsiText}>
-                    {item.deskripsi}
-                  </Text>
+                  <Text style={profileStyles.tahunText}>{item.tahun}</Text>
                 </View>
-              ),
-            )}
+
+                <Text style={profileStyles.instansiText}>{item.instansi}</Text>
+
+                <Text style={profileStyles.deskripsiText}>
+                  {item.deskripsi}
+                </Text>
+              </View>
+            ))}
           </View>
         )}
       </View>
@@ -341,43 +303,33 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="#0071DC"
-      />
+      <StatusBar barStyle="light-content" backgroundColor="#0071DC" />
 
       <View style={styles.headerContainer}>
         <View style={styles.topHeaderBar}>
           <View style={styles.brandContainer}>
             <Image
-              source={require('@/assets/images/logo.png')}
+              source={require("@/assets/images/logo.png")}
               style={styles.logoImage}
               resizeMode="contain"
             />
 
             <View style={styles.brandTitleContainer}>
-              <Text style={styles.brandMainText}>
-                TRIO
-              </Text>
+              <Text style={styles.brandMainText}>TRIO</Text>
 
-              <Text style={styles.brandSubText}>
-                PLAYSTATION
-              </Text>
+              <Text style={styles.brandSubText}>PLAYSTATION</Text>
             </View>
           </View>
 
           <TouchableOpacity
             style={[
               styles.hamburgerButton,
-              isMenuOpen &&
-                styles.hamburgerButtonActive,
+              isMenuOpen && styles.hamburgerButtonActive,
             ]}
             onPress={toggleMenu}
             activeOpacity={0.85}
           >
-            <Text style={styles.hamburgerText}>
-              {isMenuOpen ? '✕' : '☰'}
-            </Text>
+            <Text style={styles.hamburgerText}>{isMenuOpen ? "✕" : "☰"}</Text>
           </TouchableOpacity>
         </View>
 
@@ -386,21 +338,17 @@ export default function Index() {
             {menuItems.map((item) => (
               <TouchableOpacity
                 key={item}
-                onPress={() =>
-                  handleSelectMenu(item)
-                }
+                onPress={() => handleSelectMenu(item)}
                 style={[
                   styles.dropdownItem,
-                  activeMenu === item &&
-                    styles.dropdownItemActive,
+                  activeMenu === item && styles.dropdownItemActive,
                 ]}
                 activeOpacity={0.7}
               >
                 <Text
                   style={[
                     styles.dropdownText,
-                    activeMenu === item &&
-                      styles.dropdownTextActive,
+                    activeMenu === item && styles.dropdownTextActive,
                   ]}
                 >
                   {item}
@@ -414,9 +362,9 @@ export default function Index() {
       <ScrollView
         ref={scrollRef}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ backgroundColor: '#F4F6F9', flexGrow: 1 }}
+        contentContainerStyle={{ backgroundColor: "#F4F6F9", flexGrow: 1 }}
       >
-        {activeMenu === 'Tentang' ? (
+        {activeMenu === "Tentang" ? (
           aboutContent
         ) : (
           <>
@@ -429,31 +377,77 @@ export default function Index() {
             />
 
             <View
-              style={{ maxWidth: 680, width: '100%', alignSelf: 'center' }}
+              style={{ maxWidth: 680, width: "100%", alignSelf: "center" }}
               onLayout={(event) => {
-                setBookingY(
-                  event.nativeEvent.layout.y,
-                );
+                setBookingY(event.nativeEvent.layout.y);
               }}
             >
               <BookingForm
-                daftarPaket={
-                  DAFTAR_PAKET
-                }
+                daftarPaket={DAFTAR_PAKET}
                 selectedPaket={selectedPaket}
                 onSelectPaket={handleSelectPaketFromBooking}
-                onBookingSuccess={
-                  handleBookingSuccess
-                }
+                onBookingSuccess={handleBookingSuccess}
               />
 
-              <BookingResult
-                bookingData={bookingData}
-              />
+              <BookingResult bookingData={bookingData} />
             </View>
           </>
         )}
+        <TouchableOpacity
+          onPress={() => router.push("/profile")}
+          style={{
+            backgroundColor: "#0071DC",
+            padding: 15,
+            borderRadius: 8,
+            marginVertical: 40,
+            marginHorizontal: 20,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 16 }}>
+            KLIK
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function InfoModulDua() {
+  return (
+    <View
+      style={{
+        backgroundColor: "#FFFFFF",
+        marginHorizontal: 20,
+        marginVertical: 15,
+        padding: 16,
+        borderRadius: 12,
+        borderWidth: 1.5,
+        borderColor: "#0071DC",
+        alignItems: "center",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 16,
+          fontWeight: "bold",
+          color: "#0071DC",
+          marginBottom: 4,
+        }}
+      >
+        Praktikum Modul 2
+      </Text>
+      <Text
+        style={{
+          fontSize: 13,
+          color: "#475569",
+          textAlign: "center",
+          marginBottom: 6,
+        }}
+      ></Text>
+      <Text
+        style={{ fontSize: 14, fontWeight: "bold", color: "#0F172A" }}
+      ></Text>
+    </View>
   );
 }

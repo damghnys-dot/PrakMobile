@@ -25,7 +25,7 @@ export const RentalProvider: React.FC<RentalProviderProps> = ({ children }) => {
 export const useRental = (): RentalContextType => {
   const context = useContext(RentalContext);
   if (!context) {
-    throw new Error('useRental must be used within a RentalProvider');
+    throw new Error('useRental must be used within a RentalProvider'); 
   }
   return context;
 };

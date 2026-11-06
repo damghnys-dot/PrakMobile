@@ -1,55 +1,45 @@
-import React from 'react';
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
-  StyleSheet,
-  Text,
-  View,
   SafeAreaView,
   ScrollView,
   StatusBar,
+  StyleSheet,
+  Text,
   TouchableOpacity,
   useWindowDimensions,
-} from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { DAFTAR_PAKET } from '../../constants/rental';
-import { PaketRental } from '../../types/rental';
-import { useRental } from '../../context/RentalContext';
+  View
+} from "react-native";
+import { DAFTAR_PAKET } from "../../constants/rental";
+import { useRental } from "../../context/RentalContext";
+import { PaketRental } from "../../types/rental";
 
 export default function DetailPaketScreen() {
   const router = useRouter();
   const { setSelectedPaket } = useRental();
   const { id } = useLocalSearchParams<{ id: string }>();
-
-  // Cari data paket dari DAFTAR_PAKET berdasarkan id (perbandingan aman String)
   const paket: PaketRental | undefined = DAFTAR_PAKET.find(
-    (item) => String(item.id) === String(id)
+    (item) => String(item.id) === String(id),
   );
 
   const { width } = useWindowDimensions();
   const isDesktop = width >= 640;
 
   const formatRupiah = (angka: number): string =>
-    `Rp ${angka.toLocaleString('id-ID')}`;
+    `Rp ${angka.toLocaleString("id-ID")}`;
 
-  // Navigasi Tombol 1: Kembali
   const handleKembali = () => {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.replace('/');
-    }
+    router.replace("/");
   };
 
-  // Navigasi Tombol 2: Pilih & Pesan Paket Ini
   const handlePilihPaket = () => {
     if (!paket) return;
     setSelectedPaket(paket);
     router.replace({
-      pathname: '/',
+      pathname: "/",
       params: { selectedPaketId: String(paket.id) },
     });
   };
 
-  // Jika paket dengan id tidak ditemukan
   if (!paket) {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -77,7 +67,7 @@ export default function DetailPaketScreen() {
     );
   }
 
-  const isPS5 = paket.konsol.toUpperCase().includes('PS5');
+  const isPS5 = paket.konsol.toUpperCase().includes("PS5");
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -125,7 +115,9 @@ export default function DetailPaketScreen() {
             {/* Harga Sewa */}
             <View style={styles.priceContainer}>
               <View style={styles.priceRow}>
-                <Text style={styles.hargaText}>{formatRupiah(paket.harga)}</Text>
+                <Text style={styles.hargaText}>
+                  {formatRupiah(paket.harga)}
+                </Text>
                 <Text style={styles.durasiText}> / {paket.durasi}</Text>
               </View>
               <Text style={styles.priceNote}>
@@ -177,8 +169,8 @@ export default function DetailPaketScreen() {
                 <Text style={styles.specLabel}>Visual & Resolusi</Text>
                 <Text style={styles.specValue}>
                   {isPS5
-                    ? 'Mendukung hingga 4K HDR 120Hz, visual ultra jernih & mulus'
-                    : 'Full HD 1080p HDR grafis tajam dan stabil'}
+                    ? "Mendukung hingga 4K HDR 120Hz, visual ultra jernih & mulus"
+                    : "Full HD 1080p HDR grafis tajam dan stabil"}
                 </Text>
               </View>
 
@@ -186,8 +178,8 @@ export default function DetailPaketScreen() {
                 <Text style={styles.specLabel}>Kontroler Stik</Text>
                 <Text style={styles.specValue}>
                   {isPS5
-                    ? 'DualSense Wireless Controller dengan Haptic Feedback & Adaptive Triggers'
-                    : 'DualShock 4 Wireless Controller original dengan tombol presisi'}
+                    ? "DualSense Wireless Controller dengan Haptic Feedback & Adaptive Triggers"
+                    : "DualShock 4 Wireless Controller original dengan tombol presisi"}
                 </Text>
               </View>
 
@@ -195,8 +187,8 @@ export default function DetailPaketScreen() {
                 <Text style={styles.specLabel}>Kapasitas & Storage</Text>
                 <Text style={styles.specValue}>
                   {isPS5
-                    ? 'Ultra-High Speed Custom SSD NVMe loading sekejap mata'
-                    : '1TB High Capacity Storage terisi penuh update game terbaru'}
+                    ? "Ultra-High Speed Custom SSD NVMe loading sekejap mata"
+                    : "1TB High Capacity Storage terisi penuh update game terbaru"}
                 </Text>
               </View>
 
@@ -204,8 +196,8 @@ export default function DetailPaketScreen() {
                 <Text style={styles.specLabel}>Game Terinstal</Text>
                 <Text style={styles.specValue}>
                   Bebas pilih & request game populer: EA Sports FC 25 / FIFA,
-                  eFootball, GTA V, Marvel&apos;s Spider-Man, Mortal Kombat, God of
-                  War, dll.
+                  eFootball, GTA V, Marvel&apos;s Spider-Man, Mortal Kombat, God
+                  of War, dll.
                 </Text>
               </View>
             </View>
@@ -236,7 +228,9 @@ export default function DetailPaketScreen() {
               <View style={styles.syaratItem}>
                 <Text style={styles.syaratNumber}>2</Text>
                 <Text style={styles.syaratText}>
-                  <Text style={styles.syaratBold}>Garansi Tukar Unit 24 Jam: </Text>
+                  <Text style={styles.syaratBold}>
+                    Garansi Tukar Unit 24 Jam:{" "}
+                  </Text>
                   Jika terjadi kendala teknis atau gangguan fungsi stik/konsol,
                   kami siap tukar unit secara gratis dan cepat.
                 </Text>
@@ -307,7 +301,7 @@ export default function DetailPaketScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: "#F8FAFC",
   },
   scrollContent: {
     paddingVertical: 20,
@@ -315,26 +309,26 @@ const styles = StyleSheet.create({
   },
   containerWrapper: {
     maxWidth: 680,
-    width: '100%',
-    alignSelf: 'center',
+    width: "100%",
+    alignSelf: "center",
     gap: 16,
   },
   mainCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 24,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#0071DC',
+    borderColor: "#E2E8F0",
+    shadowColor: "#0071DC",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 10,
     elevation: 3,
   },
   badgesRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
     gap: 8,
     marginBottom: 14,
   },
@@ -344,206 +338,206 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   badgePS4: {
-    backgroundColor: '#EBF3FC',
+    backgroundColor: "#EBF3FC",
   },
   badgePS5: {
-    backgroundColor: '#0071DC',
+    backgroundColor: "#0071DC",
   },
   badgeKonsolText: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: 0.5,
   },
   textPS4: {
-    color: '#0071DC',
+    color: "#0071DC",
   },
   textPS5: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   badgeDurasi: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: "#F1F5F9",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: "#E2E8F0",
   },
   badgeDurasiText: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#475569',
+    fontWeight: "700",
+    color: "#475569",
   },
   badgePopuler: {
-    backgroundColor: '#FEF2F2',
+    backgroundColor: "#FEF2F2",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: "#FECACA",
   },
   badgePopulerText: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#DC2626',
+    fontWeight: "700",
+    color: "#DC2626",
   },
   namaPaket: {
     fontSize: 24,
-    fontWeight: '800',
-    color: '#0F172A',
+    fontWeight: "800",
+    color: "#0F172A",
     lineHeight: 32,
     marginBottom: 16,
   },
   priceContainer: {
-    backgroundColor: '#F0F7FF',
+    backgroundColor: "#F0F7FF",
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#BAE6FD',
+    borderColor: "#BAE6FD",
   },
   priceRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
+    flexDirection: "row",
+    alignItems: "baseline",
     marginBottom: 4,
   },
   hargaText: {
     fontSize: 28,
-    fontWeight: '900',
-    color: '#0071DC',
+    fontWeight: "900",
+    color: "#0071DC",
   },
   durasiText: {
     fontSize: 15,
-    fontWeight: '600',
-    color: '#64748B',
+    fontWeight: "600",
+    color: "#64748B",
     marginLeft: 4,
   },
   priceNote: {
     fontSize: 12,
-    color: '#0284C7',
-    fontWeight: '500',
+    color: "#0284C7",
+    fontWeight: "500",
   },
   sectionCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#0F172A',
+    borderColor: "#E2E8F0",
+    shadowColor: "#0F172A",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 6,
     elevation: 2,
   },
   sectionHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     marginBottom: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: "#F1F5F9",
   },
   sectionAccentBar: {
     width: 4,
     height: 36,
     borderRadius: 2,
-    backgroundColor: '#0071DC',
+    backgroundColor: "#0071DC",
   },
   sectionTitle: {
     fontSize: 17,
-    fontWeight: '700',
-    color: '#0F172A',
+    fontWeight: "700",
+    color: "#0F172A",
   },
   sectionSubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: "#64748B",
     marginTop: 2,
   },
   fiturList: {
     gap: 10,
   },
   fiturRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F8FAFC",
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: "#F1F5F9",
   },
   checkCircle: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#EBF3FC',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#EBF3FC",
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 10,
   },
   checkIcon: {
-    color: '#0071DC',
+    color: "#0071DC",
     fontSize: 13,
-    fontWeight: '900',
+    fontWeight: "900",
   },
   fiturText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#1E293B',
+    fontWeight: "600",
+    color: "#1E293B",
     flex: 1,
   },
   specGrid: {
     gap: 12,
   },
   specItem: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: "#F8FAFC",
     padding: 12,
     borderRadius: 10,
     borderLeftWidth: 3,
-    borderLeftColor: '#0071DC',
+    borderLeftColor: "#0071DC",
   },
   specLabel: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#0071DC',
-    textTransform: 'uppercase',
+    fontWeight: "700",
+    color: "#0071DC",
+    textTransform: "uppercase",
     letterSpacing: 0.5,
     marginBottom: 4,
   },
   specValue: {
     fontSize: 13,
-    color: '#334155',
+    color: "#334155",
     lineHeight: 19,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   syaratList: {
     gap: 12,
   },
   syaratItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     gap: 10,
   },
   syaratNumber: {
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: '#0071DC',
-    color: '#FFFFFF',
+    backgroundColor: "#0071DC",
+    color: "#FFFFFF",
     fontSize: 11,
-    fontWeight: '800',
-    textAlign: 'center',
+    fontWeight: "800",
+    textAlign: "center",
     lineHeight: 22,
     marginTop: 1,
   },
   syaratText: {
     flex: 1,
     fontSize: 13,
-    color: '#475569',
+    color: "#475569",
     lineHeight: 20,
   },
   syaratBold: {
-    fontWeight: '700',
-    color: '#0F172A',
+    fontWeight: "700",
+    color: "#0F172A",
   },
   actionsContainer: {
     gap: 12,
@@ -551,87 +545,87 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   actionsRowDesktop: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   actionsRowMobile: {
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   secondaryButton: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderWidth: 1.5,
-    borderColor: '#0071DC',
+    borderColor: "#0071DC",
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   secondaryButtonText: {
-    color: '#0071DC',
+    color: "#0071DC",
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   primaryButton: {
     flex: 1,
-    backgroundColor: '#0071DC',
+    backgroundColor: "#0071DC",
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#0071DC',
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#0071DC",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 6,
     elevation: 3,
   },
   primaryButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   notFoundContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
   },
   notFoundCard: {
     maxWidth: 480,
-    width: '100%',
-    backgroundColor: '#FFFFFF',
+    width: "100%",
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 28,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: "#E2E8F0",
   },
   notFoundIconContainer: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#EBF3FC',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#EBF3FC",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 16,
   },
   notFoundIconText: {
     fontSize: 28,
-    fontWeight: '900',
-    color: '#0071DC',
+    fontWeight: "900",
+    color: "#0071DC",
   },
   notFoundTitle: {
     fontSize: 20,
-    fontWeight: '800',
-    color: '#0F172A',
+    fontWeight: "800",
+    color: "#0F172A",
     marginBottom: 8,
   },
   notFoundText: {
     fontSize: 14,
-    color: '#64748B',
-    textAlign: 'center',
+    color: "#64748B",
+    textAlign: "center",
     lineHeight: 22,
     marginBottom: 24,
   },

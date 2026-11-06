@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
-  View,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
-import { PaketRental } from '../types/rental';
+  View,
+} from "react-native";
+import { PaketRental } from "../types/rental";
 import {
-  parseIndonesianDate,
   formatTanggalIndonesia,
   hitungBatasPengembalian,
-} from '../utils/rentalDate';
+  parseIndonesianDate,
+} from "../utils/rentalDate";
 
 export type { PaketRental };
 
@@ -37,19 +37,19 @@ export default function BookingForm({
   onSelectPaket,
   onBookingSuccess,
 }: BookingFormProps) {
-  const [nama, setNama] = useState('');
-  const [whatsapp, setWhatsapp] = useState('');
-  const [tanggal, setTanggal] = useState('');
-  const [catatan, setCatatan] = useState('');
+  const [nama, setNama] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [tanggal, setTanggal] = useState("");
+  const [catatan, setCatatan] = useState("");
+  const [alamat, setAlamat] = useState("");
 
-  const [paketLokal, setPaketLokal] =
-    useState<PaketRental | null>(selectedPaket ?? null);
-  const paketTerpilih =
-    selectedPaket === undefined ? paketLokal : selectedPaket;
+  const [paketTerpilih, setPaketTerpilih] = useState<PaketRental | null>(
+    selectedPaket ?? null,
+  );
 
   const [showPaket, setShowPaket] = useState(false);
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const parsedTanggal = parseIndonesianDate(tanggal);
   const estimasiPengembalian =
@@ -57,37 +57,45 @@ export default function BookingForm({
       ? hitungBatasPengembalian(parsedTanggal, paketTerpilih.durasi)
       : null;
 
+  useEffect(() => {
+    if (selectedPaket) {
+      setPaketTerpilih(selectedPaket);
+      setShowPaket(false);
+      setError("");
+    } else if (selectedPaket === null) {
+      setPaketTerpilih(null);
+    }
+  }, [selectedPaket]);
+
   const formatRupiah = (angka: number) => {
-    return `Rp ${angka.toLocaleString('id-ID')}`;
+    return `Rp ${angka.toLocaleString("id-ID")}`;
   };
 
   const handlePilihPaket = (paket: PaketRental) => {
-    if (selectedPaket === undefined) {
-      setPaketLokal(paket);
-    }
+    setPaketTerpilih(paket);
     setShowPaket(false);
-    setError('');
+    setError("");
     onSelectPaket?.(paket);
   };
 
   const handleBooking = () => {
-    if (nama.trim() === '') {
-      setError('Nama penyewa wajib diisi.');
+    if (nama.trim() === "") {
+      setError("Nama penyewa wajib diisi.");
       return;
     }
 
-    if (whatsapp.trim() === '') {
-      setError('Nomor WhatsApp wajib diisi.');
+    if (whatsapp.trim() === "") {
+      setError("Nomor WhatsApp wajib diisi.");
       return;
     }
 
     if (paketTerpilih === null) {
-      setError('Silakan pilih paket rental terlebih dahulu.');
+      setError("Silakan pilih paket rental terlebih dahulu.");
       return;
     }
 
-    if (tanggal.trim() === '') {
-      setError('Tanggal sewa wajib diisi.');
+    if (tanggal.trim() === "") {
+      setError("Tanggal sewa wajib diisi.");
       return;
     }
 
@@ -97,7 +105,8 @@ export default function BookingForm({
       : tanggal.trim();
 
     const batasPengembalian =
-      hitungBatasPengembalian(validDate ?? tanggal, paketTerpilih.durasi) ?? undefined;
+      hitungBatasPengembalian(validDate ?? tanggal, paketTerpilih.durasi) ??
+      undefined;
 
     const bookingData: BookingData = {
       nama,
@@ -109,25 +118,20 @@ export default function BookingForm({
     };
 
     onBookingSuccess(bookingData);
-    setError('');
+    setError("");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>
-        Booking Rental
-      </Text>
+      <Text style={styles.sectionTitle}>Booking Rental</Text>
 
       <Text style={styles.sectionSubtitle}>
         Isi data pemesanan untuk menyewa PlayStation
       </Text>
 
       <View style={styles.formCard}>
-        {/* NAMA */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Nama Penyewa
-          </Text>
+          <Text style={styles.label}>Nama Penyewa</Text>
 
           <TextInput
             style={styles.input}
@@ -138,11 +142,8 @@ export default function BookingForm({
           />
         </View>
 
-        {/* WHATSAPP */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Nomor WhatsApp
-          </Text>
+          <Text style={styles.label}>Nomor WhatsApp</Text>
 
           <TextInput
             style={styles.input}
@@ -154,11 +155,22 @@ export default function BookingForm({
           />
         </View>
 
-        {/* PILIH PAKET */}
+         <View style={styles.inputGroup}>
+          <Text style={styles.label}>Alamat</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Alamat"
+            placeholderTextColor="#94A3B8"
+            value={alamat}
+            onChangeText={setAlamat}
+          />
+        </View>
+
+        
+      
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Pilih Paket Rental
-          </Text>
+          <Text style={styles.label}>Pilih Paket Rental</Text>
 
           <TouchableOpacity
             style={styles.selectButton}
@@ -174,19 +186,16 @@ export default function BookingForm({
             >
               {paketTerpilih
                 ? `${paketTerpilih.namaPaket} - ${formatRupiah(paketTerpilih.harga)}`
-                : 'Pilih paket rental'}
+                : "Pilih paket rental"}
             </Text>
 
-            <Text style={styles.arrow}>
-              {showPaket ? '▲' : '▼'}
-            </Text>
+            <Text style={styles.arrow}>{showPaket ? "▲" : "▼"}</Text>
           </TouchableOpacity>
 
           {showPaket && (
             <View style={styles.packageList}>
               {daftarPaket.map((paket) => {
-                const isSelected =
-                  paketTerpilih?.id === paket.id;
+                const isSelected = paketTerpilih?.id === paket.id;
 
                 return (
                   <TouchableOpacity
@@ -199,9 +208,7 @@ export default function BookingForm({
                     activeOpacity={0.8}
                   >
                     <View style={styles.packageInfo}>
-                      <Text style={styles.packageName}>
-                        {paket.namaPaket}
-                      </Text>
+                      <Text style={styles.packageName}>{paket.namaPaket}</Text>
 
                       <Text style={styles.packageDetail}>
                         {paket.konsol} • {paket.durasi}
@@ -222,14 +229,10 @@ export default function BookingForm({
         {paketTerpilih && (
           <View style={styles.selectedPackage}>
             <View style={styles.selectedHeader}>
-              <Text style={styles.selectedTitle}>
-                Paket Dipilih
-              </Text>
+              <Text style={styles.selectedTitle}>Paket Dipilih</Text>
 
               <View style={styles.consoleBadge}>
-                <Text style={styles.consoleText}>
-                  {paketTerpilih.konsol}
-                </Text>
+                <Text style={styles.consoleText}>{paketTerpilih.konsol}</Text>
               </View>
             </View>
 
@@ -238,9 +241,7 @@ export default function BookingForm({
             </Text>
 
             <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>
-                Harga
-              </Text>
+              <Text style={styles.priceLabel}>Harga</Text>
 
               <Text style={styles.priceValue}>
                 {formatRupiah(paketTerpilih.harga)}
@@ -248,22 +249,16 @@ export default function BookingForm({
             </View>
 
             <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>
-                Durasi
-              </Text>
+              <Text style={styles.priceLabel}>Durasi</Text>
 
-              <Text style={styles.durationValue}>
-                {paketTerpilih.durasi}
-              </Text>
+              <Text style={styles.durationValue}>{paketTerpilih.durasi}</Text>
             </View>
           </View>
         )}
 
         {/* TANGGAL */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Tanggal Sewa
-          </Text>
+          <Text style={styles.label}>Tanggal Sewa</Text>
 
           <TextInput
             style={styles.input}
@@ -284,9 +279,7 @@ export default function BookingForm({
 
         {/* CATATAN */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Catatan Tambahan
-          </Text>
+          <Text style={styles.label}>Catatan Tambahan</Text>
 
           <TextInput
             style={[styles.input, styles.textArea]}
@@ -301,11 +294,9 @@ export default function BookingForm({
         </View>
 
         {/* ERROR */}
-        {error !== '' && (
+        {error !== "" && (
           <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>
-              {error}
-            </Text>
+            <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
 
@@ -315,9 +306,7 @@ export default function BookingForm({
           onPress={handleBooking}
           activeOpacity={0.85}
         >
-          <Text style={styles.bookingButtonText}>
-            Booking Sekarang
-          </Text>
+          <Text style={styles.bookingButtonText}>Booking Sekarang</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -329,32 +318,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 24,
     maxWidth: 680,
-    width: '100%',
-    alignSelf: 'center',
+    width: "100%",
+    alignSelf: "center",
   },
 
   sectionTitle: {
     fontSize: 22,
-    fontWeight: '800',
-    color: '#0F172A',
-    textAlign: 'center',
+    fontWeight: "800",
+    color: "#0F172A",
+    textAlign: "center",
     marginBottom: 6,
   },
 
   sectionSubtitle: {
     fontSize: 13,
-    color: '#475569',
-    textAlign: 'center',
+    color: "#475569",
+    textAlign: "center",
     marginBottom: 20,
   },
 
   formCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#0F172A',
+    borderColor: "#E2E8F0",
+    shadowColor: "#0F172A",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -367,19 +356,19 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#0F172A',
+    fontWeight: "600",
+    color: "#0F172A",
     marginBottom: 8,
   },
 
   input: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: "#F8FAFC",
     borderWidth: 1,
-    borderColor: '#CBD5E1',
+    borderColor: "#CBD5E1",
     borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    color: '#0F172A',
+    color: "#0F172A",
     fontSize: 13,
   },
 
@@ -388,41 +377,41 @@ const styles = StyleSheet.create({
   },
 
   selectButton: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: "#F8FAFC",
     borderWidth: 1,
-    borderColor: '#CBD5E1',
+    borderColor: "#CBD5E1",
     borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 13,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 
   selectText: {
-    color: '#0F172A',
+    color: "#0F172A",
     fontSize: 13,
     flex: 1,
     marginRight: 10,
   },
 
   placeholderText: {
-    color: '#94A3B8',
+    color: "#94A3B8",
   },
 
   arrow: {
-    color: '#0071DC',
+    color: "#0071DC",
     fontSize: 12,
   },
 
   packageList: {
     marginTop: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#CBD5E1',
-    overflow: 'hidden',
-    shadowColor: '#0F172A',
+    borderColor: "#CBD5E1",
+    overflow: "hidden",
+    shadowColor: "#0F172A",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 6,
@@ -432,14 +421,14 @@ const styles = StyleSheet.create({
   packageItem: {
     padding: 13,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    borderBottomColor: "#E2E8F0",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 
   packageItemSelected: {
-    backgroundColor: '#E0F2FE',
+    backgroundColor: "#E0F2FE",
   },
 
   packageInfo: {
@@ -448,116 +437,116 @@ const styles = StyleSheet.create({
   },
 
   packageName: {
-    color: '#0F172A',
+    color: "#0F172A",
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: 4,
   },
 
   packageDetail: {
-    color: '#475569',
+    color: "#475569",
     fontSize: 11,
   },
 
   packagePrice: {
-    color: '#00439C',
+    color: "#00439C",
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: "800",
   },
 
   selectedPackage: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: "#EFF6FF",
     borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderColor: "#BFDBFE",
     borderRadius: 8,
     padding: 14,
     marginBottom: 16,
   },
 
   selectedHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
 
   selectedTitle: {
-    color: '#0071DC',
+    color: "#0071DC",
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 
   consoleBadge: {
-    backgroundColor: '#E0F2FE',
+    backgroundColor: "#E0F2FE",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
   },
 
   consoleText: {
-    color: '#0369A1',
+    color: "#0369A1",
     fontSize: 10,
-    fontWeight: '800',
+    fontWeight: "800",
   },
 
   selectedPackageName: {
-    color: '#0F172A',
+    color: "#0F172A",
     fontSize: 15,
-    fontWeight: '800',
+    fontWeight: "800",
     marginBottom: 10,
   },
 
   priceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginTop: 4,
   },
 
   priceLabel: {
-    color: '#475569',
+    color: "#475569",
     fontSize: 12,
   },
 
   priceValue: {
-    color: '#00439C',
+    color: "#00439C",
     fontSize: 16,
-    fontWeight: '900',
+    fontWeight: "900",
   },
 
   durationValue: {
-    color: '#0F172A',
+    color: "#0F172A",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 
   errorContainer: {
-    backgroundColor: '#FEF2F2',
+    backgroundColor: "#FEF2F2",
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: "#FECACA",
     borderRadius: 8,
     padding: 10,
     marginBottom: 14,
   },
 
   errorText: {
-    color: '#DC2626',
+    color: "#DC2626",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 
   bookingButton: {
-    backgroundColor: '#0071DC',
+    backgroundColor: "#0071DC",
     paddingVertical: 14,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   bookingButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 
   estimateContainer: {
@@ -567,7 +556,7 @@ const styles = StyleSheet.create({
 
   estimateText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#0071DC',
+    fontWeight: "600",
+    color: "#0071DC",
   },
 });
