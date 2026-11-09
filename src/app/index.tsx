@@ -49,7 +49,7 @@ export default function Index() {
   const [bookingY, setBookingY] = useState(0);
   const [paketY, setPaketY] = useState(0);
 
-  const menuItems = ["Beranda", "Tentang", "Paket", "Ulasan"];
+  const menuItems = ["Beranda", "Tentang", "Paket"];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -129,8 +129,6 @@ export default function Index() {
         y: 0,
         animated: true,
       });
-    } else if (item === "Ulasan") {
-      router.push("/ulasan");
     }
   };
 
@@ -396,28 +394,12 @@ export default function Index() {
           </>
         )}
         <TouchableOpacity
-          onPress={() => router.push("/ulasan")}
-          style={{
-            backgroundColor: "#00439C",
-            padding: 15,
-            borderRadius: 8,
-            marginTop: 30,
-            marginBottom: 12,
-            marginHorizontal: 20,
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 15 }}>
-            Lihat Ulasan Penyewa & Cek Stok Unit PS
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
           onPress={() => router.push("/profile")}
           style={{
             backgroundColor: "#0071DC",
             padding: 15,
             borderRadius: 8,
+            marginTop: 30,
             marginBottom: 40,
             marginHorizontal: 20,
             alignItems: "center",

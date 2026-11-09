@@ -101,24 +101,6 @@ export const BerandaRental: React.FC<BerandaRentalProps> = ({
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#00439C",
-            paddingVertical: 12,
-            paddingHorizontal: 22,
-            borderRadius: 8,
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: 28,
-            alignSelf: "center",
-          }}
-          activeOpacity={0.85}
-          onPress={() => router.push("/ulasan")}
-        >
-          <Text style={{ color: "#FFFFFF", fontSize: 13, fontWeight: "700" }}>
-            Lihat Ulasan Penyewa
-          </Text>
-        </TouchableOpacity>
 
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
