@@ -19,6 +19,15 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="katalog"
+          options={{
+            title: "Katalog Game PS",
+            headerStyle: { backgroundColor: '#0071DC' },
+            headerTintColor: '#FFFFFF',
+            headerTitleStyle: { fontWeight: 'bold' },
+          }}
+        />
+        <Stack.Screen
           name="profile"
           options={{
             title: "Profil Pengembang",

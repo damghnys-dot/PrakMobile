@@ -101,6 +101,25 @@ export const BerandaRental: React.FC<BerandaRentalProps> = ({
           </TouchableOpacity>
         </View>
 
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#002F6C",
+            paddingVertical: 12,
+            paddingHorizontal: 22,
+            borderRadius: 8,
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 28,
+            alignSelf: "center",
+          }}
+          activeOpacity={0.85}
+          onPress={() => router.push("/katalog")}
+        >
+          <Text style={{ color: "#FFFFFF", fontSize: 13, fontWeight: "700" }}>
+            Lihat Katalog Game PS
+          </Text>
+        </TouchableOpacity>
+
 
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
