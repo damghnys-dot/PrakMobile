@@ -364,7 +364,7 @@ export default function Index() {
       <ScrollView
         ref={scrollRef}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ backgroundColor: "#F4F6F9", flexGrow: 1 }}
+        contentContainerStyle={{ backgroundColor: "#F4F6F9", flexGrow: 1, paddingBottom: 40 }}
       >
         {activeMenu === "Tentang" ? (
           aboutContent
@@ -379,11 +379,35 @@ export default function Index() {
             />
 
             <View
-              style={{ maxWidth: 680, width: "100%", alignSelf: "center" }}
+              style={{ maxWidth: 680, width: "100%", alignSelf: "center", paddingHorizontal: 16 }}
               onLayout={(event) => {
                 setBookingY(event.nativeEvent.layout.y);
               }}
             >
+              <TouchableOpacity
+                onPress={() => router.push("/katalog")}
+                style={{
+                  backgroundColor: "#002F6C",
+                  paddingVertical: 14,
+                  paddingHorizontal: 20,
+                  borderRadius: 10,
+                  marginTop: 28,
+                  marginBottom: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowColor: "#002F6C",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 4,
+                  elevation: 2,
+                }}
+                activeOpacity={0.85}
+              >
+                <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 15 }}>
+                  Lihat Katalog Game PS
+                </Text>
+              </TouchableOpacity>
+
               <BookingForm
                 daftarPaket={DAFTAR_PAKET}
                 selectedPaket={selectedPaket}
@@ -395,78 +419,7 @@ export default function Index() {
             </View>
           </>
         )}
-        <TouchableOpacity
-          onPress={() => router.push("/katalog")}
-          style={{
-            backgroundColor: "#002F6C",
-            padding: 15,
-            borderRadius: 8,
-            marginTop: 30,
-            marginBottom: 12,
-            marginHorizontal: 20,
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 15 }}>
-            Lihat Katalog Game PS
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => router.push("/profile")}
-          style={{
-            backgroundColor: "#0071DC",
-            padding: 15,
-            borderRadius: 8,
-            marginBottom: 40,
-            marginHorizontal: 20,
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 15 }}>
-            Profil Pengembang
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
-  );
-}
-
-function InfoModulDua() {
-  return (
-    <View
-      style={{
-        backgroundColor: "#FFFFFF",
-        marginHorizontal: 20,
-        marginVertical: 15,
-        padding: 16,
-        borderRadius: 12,
-        borderWidth: 1.5,
-        borderColor: "#0071DC",
-        alignItems: "center",
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 16,
-          fontWeight: "bold",
-          color: "#0071DC",
-          marginBottom: 4,
-        }}
-      >
-        Praktikum Modul 2
-      </Text>
-      <Text
-        style={{
-          fontSize: 13,
-          color: "#475569",
-          textAlign: "center",
-          marginBottom: 6,
-        }}
-      ></Text>
-      <Text
-        style={{ fontSize: 14, fontWeight: "bold", color: "#0F172A" }}
-      ></Text>
-    </View>
   );
 }

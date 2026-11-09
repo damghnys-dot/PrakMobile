@@ -4,3 +4,4 @@ export interface PlayStationGame {
   genre: string[];
   developers: string[];
 }
+

@@ -8,10 +8,31 @@ export async function fetchKatalogGame(): Promise<PlayStationGame[]> {
     throw new Error("Gagal mengambil data katalog game dari server");
   }
 
-  await delay(1000);
+  await delay(1000); // Simulasi loading 1 detik
 
   const data: PlayStationGame[] = await response.json();
-  return data.slice(0, 10);
+
+  // 1. Buat daftar kata kunci game AAA / Populer yang biasa ada di Rental PS
+  const kataKunciPopuler = [
+    "Grand Theft Auto",
+    "God of War",
+    "The Last of Us",
+    "Spider-Man",
+    "Red Dead Redemption",
+    "Resident Evil",
+    "Tekken",
+    "Crash Bandicoot",
+    "Ghost of Tsushima",
+    "Horizon Zero Dawn",
+  ];
+
+  // 2. Saring (filter) data API, hanya ambil game yang namanya mengandung kata kunci di atas
+  const gamePopuler = data.filter((game) =>
+    kataKunciPopuler.some((kata) => game.name.includes(kata)),
+  );
+
+  // 3. Kembalikan 10 game teratas dari hasil saringan tersebut
+  return gamePopuler.slice(0, 10);
 }
 
 export function cekKetersediaanUnitPS(
