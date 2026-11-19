@@ -1,8 +1,9 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -13,6 +14,7 @@ import {
   View,
 } from "react-native";
 
+import { Booking } from "../../types/booking";
 import { PaketRental, PengalamanItem, SkillItem } from "../../types/rental";
 
 import {
@@ -29,9 +31,16 @@ import { BerandaRental } from "../../features/rental/BerandaRental";
 import BookingForm, { BookingData } from "../../components/BookingForm";
 
 import BookingResult from "../../components/BookingResult";
+import MyBookingsSection from "../../components/MyBookingsSection";
 import { useAuth } from "../../context/AuthContext";
 import { useRental } from "../../context/RentalContext";
 import { supabase } from "../../lib/supabase";
+import {
+  createBooking,
+  deleteBookingById,
+  fetchUserBookings,
+  parseDurasiHari,
+} from "../../services/bookingService";
 
 export default function Index() {
   const router = useRouter();
@@ -66,6 +75,68 @@ export default function Index() {
   };
 
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState<boolean>(true);
+  const [refreshingBookings, setRefreshingBookings] = useState<boolean>(false);
+  const [bookingsError, setBookingsError] = useState<string | null>(null);
+  const [bookingActionError, setBookingActionError] = useState<string | null>(
+    null,
+  );
+  const [savingBooking, setSavingBooking] = useState<boolean>(false);
+  const [saveBookingError, setSaveBookingError] = useState<string | null>(null);
+  const [saveBookingMessage, setSaveBookingMessage] = useState<string | null>(
+    null,
+  );
+
+  const loadBookings = useCallback(async (isPullRefresh = false) => {
+    if (isPullRefresh) {
+      setRefreshingBookings(true);
+    } else {
+      setLoadingBookings(true);
+    }
+    setBookingsError(null);
+    setBookingActionError(null);
+
+    try {
+      const data = await fetchUserBookings();
+      setBookings(data);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Gagal memuat daftar pesanan dari server.";
+      setBookingsError(msg);
+    } finally {
+      setLoadingBookings(false);
+      setRefreshingBookings(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user?.id) {
+      loadBookings(false);
+    } else {
+      setBookings([]);
+      setLoadingBookings(false);
+    }
+  }, [user?.id, loadBookings]);
+
+  const handleCancelBooking = async (bookingId: string) => {
+    const previousBookings = bookings;
+    setBookingActionError(null);
+    setBookings((current) => current.filter((item) => item.id !== bookingId));
+
+    try {
+      await deleteBookingById(bookingId);
+    } catch (err: unknown) {
+      setBookings(previousBookings);
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Gagal membatalkan pesanan. Data telah dikembalikan.";
+      setBookingActionError(msg);
+    }
+  };
 
   const scrollRef = useRef<ScrollView>(null);
 
@@ -166,8 +237,10 @@ export default function Index() {
     setSelectedPaket(paket);
   };
 
-  const handleBookingSuccess = (data: BookingData) => {
+  const handleBookingSuccess = async (data: BookingData) => {
     setBookingData(data);
+    setSaveBookingError(null);
+    setSaveBookingMessage(null);
 
     setTimeout(() => {
       scrollRef.current?.scrollTo({
@@ -175,6 +248,30 @@ export default function Index() {
         animated: true,
       });
     }, 100);
+
+    if (!user) {
+      return;
+    }
+
+    setSavingBooking(true);
+    try {
+      const created = await createBooking({
+        userId: user.id,
+        paketNama: data.paket.namaPaket,
+        durasiHari: parseDurasiHari(data.paket.durasi),
+        totalHarga: data.paket.harga,
+      });
+      setBookings((current) => [created, ...current]);
+      setSaveBookingMessage("Pesanan berhasil disimpan ke database cloud.");
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Gagal menyimpan pesanan ke database cloud.";
+      setSaveBookingError(msg);
+    } finally {
+      setSavingBooking(false);
+    }
   };
   const sapaHalo = (): Promise<string> => {
     return new Promise((resolve) => {
@@ -410,6 +507,14 @@ export default function Index() {
       <ScrollView
         ref={scrollRef}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshingBookings}
+            onRefresh={() => loadBookings(true)}
+            colors={["#003087"]}
+            tintColor="#003087"
+          />
+        }
         contentContainerStyle={{
           backgroundColor: "#F4F6F9",
           flexGrow: 1,
@@ -501,7 +606,39 @@ export default function Index() {
                 onBookingSuccess={handleBookingSuccess}
               />
 
+              {savingBooking && (
+                <View style={memberStyles.syncBox}>
+                  <ActivityIndicator size="small" color="#003087" />
+                  <Text style={memberStyles.syncText}>
+                    Menyimpan pesanan ke database cloud...
+                  </Text>
+                </View>
+              )}
+
+              {saveBookingMessage && !savingBooking && (
+                <View style={memberStyles.successBox}>
+                  <Text style={memberStyles.successText}>
+                    {saveBookingMessage}
+                  </Text>
+                </View>
+              )}
+
+              {saveBookingError && !savingBooking && (
+                <View style={memberStyles.errorBox}>
+                  <Text style={memberStyles.errorText}>{saveBookingError}</Text>
+                </View>
+              )}
+
               <BookingResult bookingData={bookingData} />
+
+              <MyBookingsSection
+                bookings={bookings}
+                loading={loadingBookings}
+                error={bookingsError}
+                actionError={bookingActionError}
+                onRefresh={() => loadBookings(false)}
+                onCancelBooking={handleCancelBooking}
+              />
             </View>
           </>
         )}
@@ -571,5 +708,47 @@ const memberStyles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 13,
     fontWeight: "800",
+  },
+  syncBox: {
+    marginTop: 12,
+    backgroundColor: "#EFF6FF",
+    borderWidth: 1,
+    borderColor: "#BFDBFE",
+    borderRadius: 10,
+    padding: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  syncText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#1E40AF",
+  },
+  successBox: {
+    marginTop: 12,
+    backgroundColor: "#ECFDF5",
+    borderWidth: 1,
+    borderColor: "#A7F3D0",
+    borderRadius: 10,
+    padding: 12,
+  },
+  successText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#065F46",
+  },
+  errorBox: {
+    marginTop: 12,
+    backgroundColor: "#FEF2F2",
+    borderWidth: 1,
+    borderColor: "#FECACA",
+    borderRadius: 10,
+    padding: 12,
+  },
+  errorText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#B91C1C",
   },
 });
