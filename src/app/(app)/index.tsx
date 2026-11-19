@@ -11,23 +11,23 @@ import {
   View,
 } from "react-native";
 
-import { PaketRental, PengalamanItem, SkillItem } from "../types/rental";
+import { PaketRental, PengalamanItem, SkillItem } from "../../types/rental";
 
 import {
   DAFTAR_PAKET,
   PENGALAMAN_DATA,
   PROFILE_DATA,
   SKILLS_DATA,
-} from "../constants/rental";
+} from "../../constants/rental";
 
-import { profileStyles, rentalHeaderStyles as styles } from "../styles/rental";
+import { profileStyles, rentalHeaderStyles as styles } from "../../styles/rental";
 
-import { BerandaRental } from "../features/rental/BerandaRental";
+import { BerandaRental } from "../../features/rental/BerandaRental";
 
-import BookingForm, { BookingData } from "../components/BookingForm";
+import BookingForm, { BookingData } from "../../components/BookingForm";
 
-import BookingResult from "../components/BookingResult";
-import { useRental } from "../context/RentalContext";
+import BookingResult from "../../components/BookingResult";
+import { useRental } from "../../context/RentalContext";
 
 export default function Index() {
   const router = useRouter();
@@ -153,7 +153,30 @@ export default function Index() {
       });
     }, 100);
   };
+  const sapaHalo = (): Promise<string> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve("halo");
+      }, 500);
+    });
+  };
 
+  const handleKlikHalo = () => {
+    sapaHalo().then((pesan) => {
+      alert(pesan);
+    });
+  };
+  const ambilSaya = (): Promise<string> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve("saya");
+      }, 500);
+    });
+  };
+  const handleKlikSaya = async () => {
+    const hasil = await ambilSaya();
+    alert(hasil);
+  };
   const aboutContent = (
     <View style={profileStyles.profileWrapper}>
       <View style={profileStyles.profileCard}>
@@ -364,7 +387,11 @@ export default function Index() {
       <ScrollView
         ref={scrollRef}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ backgroundColor: "#F4F6F9", flexGrow: 1, paddingBottom: 40 }}
+        contentContainerStyle={{
+          backgroundColor: "#F4F6F9",
+          flexGrow: 1,
+          paddingBottom: 40,
+        }}
       >
         {activeMenu === "Tentang" ? (
           aboutContent
@@ -379,7 +406,12 @@ export default function Index() {
             />
 
             <View
-              style={{ maxWidth: 680, width: "100%", alignSelf: "center", paddingHorizontal: 16 }}
+              style={{
+                maxWidth: 680,
+                width: "100%",
+                alignSelf: "center",
+                paddingHorizontal: 16,
+              }}
               onLayout={(event) => {
                 setBookingY(event.nativeEvent.layout.y);
               }}
@@ -403,7 +435,9 @@ export default function Index() {
                 }}
                 activeOpacity={0.85}
               >
-                <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 15 }}>
+                <Text
+                  style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 15 }}
+                >
                   Lihat Katalog Game PS
                 </Text>
               </TouchableOpacity>

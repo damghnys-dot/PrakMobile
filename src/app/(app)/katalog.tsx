@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -13,26 +13,26 @@ import {
   View,
 } from "react-native";
 
-import ErrorMessage from "../components/ErrorMessage";
-import Loading from "../components/Loading";
-import { DAFTAR_PAKET } from "../constants/rental";
+import ErrorMessage from "../../components/ErrorMessage";
+import Loading from "../../components/Loading";
+import { DAFTAR_PAKET } from "../../constants/rental";
 import {
+  cekJarakPengantaran,
   cekKetersediaanUnitPS,
+  cekKodePromo,
   fetchKatalogGame,
-} from "../services/rentalApiService";
-import { PlayStationGame } from "../types/game";
+} from "../../services/rentalApiService";
+import { PlayStationGame } from "../../types/game";
 
 export default function KatalogScreen() {
   const router = useRouter();
   const { width } = useWindowDimensions();
   const isDesktop = width >= 640;
 
-  // State untuk API Call Katalog Game
   const [gameList, setGameList] = useState<PlayStationGame[]>([]);
   const [loadingGame, setLoadingGame] = useState<boolean>(true);
   const [errorGame, setErrorGame] = useState<string | null>(null);
 
-  // State untuk Fitur Cek Ketersediaan Unit PS
   const [selectedUnit, setSelectedUnit] = useState<string>(
     DAFTAR_PAKET[0]?.namaPaket || "PS4 Slim Hemat",
   );
@@ -41,7 +41,23 @@ export default function KatalogScreen() {
   const [hasilCek, setHasilCek] = useState<string | null>(null);
   const [errorCek, setErrorCek] = useState<string | null>(null);
 
-  // Custom Async Function untuk memanggil API Katalog Game dengan async/await
+  const fetchApi = async () => {
+    setLoadingGame(true);
+    setErrorGame(null);
+    try {
+      const data = await fetchKatalogGame();
+      setGameList(data);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorGame(err.message);
+      } else {
+        setErrorGame("Gagal memuat katalog game dari server.");
+      }
+    } finally {
+      setLoadingGame(false);
+    }
+  };
+
   const loadKatalogGame = async () => {
     setLoadingGame(true);
     setErrorGame(null);
@@ -63,7 +79,6 @@ export default function KatalogScreen() {
     loadKatalogGame();
   }, []);
 
-  // Handler Pengecekan Ketersediaan Unit PS menggunakan rantai method .then() dan .catch()
   const handleCekKetersediaan = () => {
     setHasilCek(null);
     setErrorCek(null);
@@ -72,7 +87,6 @@ export default function KatalogScreen() {
     const durasi = parseInt(durasiHariInput, 10);
     const validDurasi = isNaN(durasi) ? 0 : durasi;
 
-    // WAJIB menggunakan rantai method .then() dan .catch()
     cekKetersediaanUnitPS(selectedUnit, validDurasi)
       .then((response: string) => {
         setHasilCek(response);
@@ -91,6 +105,21 @@ export default function KatalogScreen() {
       });
   };
 
+  const handleTestAntar = () => {
+    cekJarakPengantaran(5)
+      .then((pesanSukses) => {
+        alert(pesanSukses);
+      })
+      .catch((pesanGagal) => {
+        alert(pesanGagal);
+      });
+  };
+
+  const handleTestPromo = async () => {
+    const pesan = await cekKodePromo("TRIO20");
+    alert(pesan);
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" backgroundColor="#0071DC" />
@@ -99,8 +128,9 @@ export default function KatalogScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.mainWrapper, isDesktop && styles.mainWrapperDesktop]}>
-          {/* Header Navigasi */}
+        <View
+          style={[styles.mainWrapper, isDesktop && styles.mainWrapperDesktop]}
+        >
           <View style={styles.headerCard}>
             <TouchableOpacity
               style={styles.backButton}
@@ -110,42 +140,29 @@ export default function KatalogScreen() {
               <Text style={styles.backButtonText}>Kembali ke Beranda</Text>
             </TouchableOpacity>
 
-            <Text style={styles.headerTitle}>
-              Katalog Game PlayStation
-            </Text>
+            <Text style={styles.headerTitle}>Katalog Game PlayStation</Text>
             <Text style={styles.headerSubtitle}>
               Koleksi game terbaik yang siap dimainkan pada unit rental
               PlayStation di TRIO PlayStation.
             </Text>
           </View>
 
-          {/* Bagian Katalog Game (External API sampleapis.com) */}
           <View style={styles.sectionCard}>
             <View style={styles.sectionHeaderBar}>
               <Text style={styles.sectionBadge}>EXTERNAL API CALL</Text>
-              <Text style={styles.sectionTitle}>
-                Daftar Game Tersedia
-              </Text>
+              <Text style={styles.sectionTitle}>Daftar Game Tersedia</Text>
               <Text style={styles.sectionDescription}>
-                Data real-time diambil dari endpoint api.sampleapis.com/playstation/games
-                menggunakan async/await.
+                Data real-time diambil dari endpoint
+                api.sampleapis.com/playstation/games menggunakan async/await.
               </Text>
             </View>
 
-            {/* Kondisi Loading */}
-            {loadingGame && (
-              <Loading message="Memuat data..." />
-            )}
+            {loadingGame && <Loading message="Memuat data..." />}
 
-            {/* Kondisi Error */}
             {errorGame && !loadingGame && (
-              <ErrorMessage
-                message={errorGame}
-                onRetry={loadKatalogGame}
-              />
+              <ErrorMessage message={errorGame} onRetry={loadKatalogGame} />
             )}
 
-            {/* Kondisi Berhasil: Daftar Kartu Game */}
             {!loadingGame && !errorGame && (
               <View style={styles.gameListContainer}>
                 {gameList.map((game) => (
@@ -157,7 +174,10 @@ export default function KatalogScreen() {
                       <View style={styles.gameInfo}>
                         <Text style={styles.gameName}>{game.name}</Text>
                         <Text style={styles.gameDevelopers}>
-                          Pengembang: {game.developers && game.developers.length > 0 ? game.developers.join(", ") : "Tidak diketahui"}
+                          Pengembang:{" "}
+                          {game.developers && game.developers.length > 0
+                            ? game.developers.join(", ")
+                            : "Tidak diketahui"}
                         </Text>
                       </View>
                     </View>
@@ -180,7 +200,6 @@ export default function KatalogScreen() {
                   </View>
                 ))}
 
-                {/* Tombol Muat Ulang */}
                 <TouchableOpacity
                   style={styles.btnRefresh}
                   onPress={loadKatalogGame}
@@ -194,20 +213,16 @@ export default function KatalogScreen() {
             )}
           </View>
 
-          {/* Bagian Bawah: Cek Ketersediaan Unit PS */}
           <View style={styles.sectionCard}>
             <View style={styles.sectionHeaderBar}>
               <Text style={styles.sectionBadge}>FITUR ASINKRON</Text>
-              <Text style={styles.sectionTitle}>
-                Cek Ketersediaan Unit PS
-              </Text>
+              <Text style={styles.sectionTitle}>Cek Ketersediaan Unit PS</Text>
               <Text style={styles.sectionDescription}>
                 Periksa ketersediaan unit rental PlayStation di gudang sebelum
                 melakukan booking. Maksimal penyewaan adalah 14 hari.
               </Text>
             </View>
 
-            {/* Pilihan Paket Konsol */}
             <Text style={styles.inputLabel}>Pilih Model Konsol / Paket:</Text>
             <View style={styles.unitPillsContainer}>
               {DAFTAR_PAKET.map((paket) => {
@@ -235,7 +250,6 @@ export default function KatalogScreen() {
               })}
             </View>
 
-            {/* Input Durasi Hari */}
             <Text style={styles.inputLabel}>
               Durasi Sewa yang Diinginkan (Hari):
             </Text>
@@ -251,12 +265,8 @@ export default function KatalogScreen() {
               Batas durasi sewa valid: 1 sampai 14 hari.
             </Text>
 
-            {/* Tombol Cek Ketersediaan */}
             <TouchableOpacity
-              style={[
-                styles.btnCek,
-                checkingStok && styles.btnCekDisabled,
-              ]}
+              style={[styles.btnCek, checkingStok && styles.btnCekDisabled]}
               onPress={handleCekKetersediaan}
               disabled={checkingStok}
               activeOpacity={0.85}
@@ -269,13 +279,10 @@ export default function KatalogScreen() {
                   </Text>
                 </View>
               ) : (
-                <Text style={styles.btnCekText}>
-                  Cek Ketersediaan
-                </Text>
+                <Text style={styles.btnCekText}>Cek Ketersediaan</Text>
               )}
             </TouchableOpacity>
 
-            {/* Hasil Resolve (.then) */}
             {hasilCek && (
               <View style={styles.successBox}>
                 <Text style={styles.successTitle}>Unit Tersedia</Text>
@@ -283,13 +290,32 @@ export default function KatalogScreen() {
               </View>
             )}
 
-            {/* Hasil Reject (.catch) */}
             {errorCek && (
               <View style={styles.rejectBox}>
                 <Text style={styles.rejectTitle}>Pengecekan Gagal</Text>
                 <Text style={styles.rejectMessage}>{errorCek}</Text>
               </View>
             )}
+
+            <TouchableOpacity
+              style={[styles.btnRefresh, { marginTop: 16 }]}
+              onPress={handleTestAntar}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.btnRefreshText}>
+                Tes Cek Jarak Antar (6 km)
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.btnRefresh, { marginTop: 12 }]}
+              onPress={handleTestPromo}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.btnRefreshText}>
+                Tes Cek Kode Promo (TRIO20)
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -566,4 +592,3 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
-

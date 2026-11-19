@@ -9,9 +9,9 @@ import {
   useWindowDimensions,
   View
 } from "react-native";
-import { DAFTAR_PAKET } from "../../constants/rental";
-import { useRental } from "../../context/RentalContext";
-import { PaketRental } from "../../types/rental";
+import { DAFTAR_PAKET } from "../../../constants/rental";
+import { useRental } from "../../../context/RentalContext";
+import { PaketRental } from "../../../types/rental";
 
 export default function DetailPaketScreen() {
   const router = useRouter();
@@ -78,9 +78,7 @@ export default function DetailPaketScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.containerWrapper}>
-          {/* Main Card: Info & Harga */}
           <View style={styles.mainCard}>
-            {/* Badges Row */}
             <View style={styles.badgesRow}>
               <View
                 style={[
@@ -109,10 +107,8 @@ export default function DetailPaketScreen() {
               )}
             </View>
 
-            {/* Nama Paket */}
             <Text style={styles.namaPaket}>{paket.namaPaket}</Text>
 
-            {/* Harga Sewa */}
             <View style={styles.priceContainer}>
               <View style={styles.priceRow}>
                 <Text style={styles.hargaText}>
@@ -126,7 +122,6 @@ export default function DetailPaketScreen() {
             </View>
           </View>
 
-          {/* Section: Fasilitas Paket */}
           <View style={styles.sectionCard}>
             <View style={styles.sectionHeaderRow}>
               <View style={styles.sectionAccentBar} />
@@ -150,7 +145,6 @@ export default function DetailPaketScreen() {
             </View>
           </View>
 
-          {/* Section: Spesifikasi Konsol */}
           <View style={styles.sectionCard}>
             <View style={styles.sectionHeaderRow}>
               <View style={styles.sectionAccentBar} />
@@ -203,7 +197,6 @@ export default function DetailPaketScreen() {
             </View>
           </View>
 
-          {/* Section: Syarat & Ketentuan Sewa */}
           <View style={styles.sectionCard}>
             <View style={styles.sectionHeaderRow}>
               <View style={styles.sectionAccentBar} />
@@ -265,14 +258,12 @@ export default function DetailPaketScreen() {
             </View>
           </View>
 
-          {/* Action Navigation Buttons */}
           <View
             style={[
               styles.actionsContainer,
               isDesktop ? styles.actionsRowDesktop : styles.actionsRowMobile,
             ]}
           >
-            {/* Tombol 1: Kembali */}
             <TouchableOpacity
               style={styles.secondaryButton}
               onPress={handleKembali}
@@ -281,7 +272,6 @@ export default function DetailPaketScreen() {
               <Text style={styles.secondaryButtonText}>Kembali</Text>
             </TouchableOpacity>
 
-            {/* Tombol 2: Pilih & Pesan Paket Ini */}
             <TouchableOpacity
               style={styles.primaryButton}
               onPress={handlePilihPaket}
