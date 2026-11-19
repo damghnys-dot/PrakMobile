@@ -123,42 +123,9 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.card}>
-            <View style={styles.modeTabs}>
-              <TouchableOpacity
-                style={[styles.modeTab, !isRegistering && styles.modeTabActive]}
-                onPress={() => {
-                  if (isRegistering) handleToggleMode();
-                }}
-                disabled={loading}
-                activeOpacity={0.8}
-              >
-                <Text
-                  style={[
-                    styles.modeTabText,
-                    !isRegistering && styles.modeTabTextActive,
-                  ]}
-                >
-                  Masuk
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modeTab, isRegistering && styles.modeTabActive]}
-                onPress={() => {
-                  if (!isRegistering) handleToggleMode();
-                }}
-                disabled={loading}
-                activeOpacity={0.8}
-              >
-                <Text
-                  style={[
-                    styles.modeTabText,
-                    isRegistering && styles.modeTabTextActive,
-                  ]}
-                >
-                  Daftar Member Baru
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <Text style={styles.formTitle}>
+              {isRegistering ? "Daftar Member Baru" : "Masuk Akun Member"}
+            </Text>
 
             {errorMsg && (
               <View style={styles.errorBox}>
@@ -246,7 +213,7 @@ export default function LoginScreen() {
               <Text style={styles.switchLinkText}>
                 {isRegistering
                   ? "Sudah punya akun? Masuk di sini"
-                  : "Belum punya akun? Daftar Member Baru"}
+                  : "Belum punya akun? Daftar di sini"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -314,29 +281,12 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     elevation: 8,
   },
-  modeTabs: {
-    flexDirection: "row",
-    backgroundColor: "#F1F5F9",
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 20,
-  },
-  modeTab: {
-    flex: 1,
-    paddingVertical: 10,
-    borderRadius: 9,
-    alignItems: "center",
-  },
-  modeTabActive: {
-    backgroundColor: "#0071DC",
-  },
-  modeTabText: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#475569",
-  },
-  modeTabTextActive: {
-    color: "#FFFFFF",
+  formTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#003087",
+    textAlign: "center",
+    marginBottom: 18,
   },
   errorBox: {
     backgroundColor: "#FEF2F2",
