@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Modal,
+  Pressable,
   RefreshControl,
   SafeAreaView,
   ScrollView,
@@ -56,6 +58,7 @@ export default function Index() {
   const { selectedPaket, setSelectedPaket } = useRental();
   const { user } = useAuth();
   const [loggingOut, setLoggingOut] = useState<boolean>(false);
+  const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
 
   const callsignMeta = user?.user_metadata?.callsign;
   const memberName =
@@ -63,12 +66,14 @@ export default function Index() {
       ? callsignMeta.trim()
       : user?.email || "Member TRIO";
   const memberEmail = user?.email || "-";
+  const memberInitial = memberName.charAt(0).toUpperCase() || "M";
 
   const handleLogout = async () => {
     if (loggingOut) return;
     setLoggingOut(true);
     try {
       await supabase.auth.signOut();
+      setShowProfileMenu(false);
     } finally {
       setLoggingOut(false);
     }
@@ -466,16 +471,34 @@ export default function Index() {
             </View>
           </View>
 
-          <TouchableOpacity
-            style={[
-              styles.hamburgerButton,
-              isMenuOpen && styles.hamburgerButtonActive,
-            ]}
-            onPress={toggleMenu}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.hamburgerText}>{isMenuOpen ? "✕" : "☰"}</Text>
-          </TouchableOpacity>
+          <View style={memberStyles.headerRightGroup}>
+            <TouchableOpacity
+              style={memberStyles.profilePill}
+              onPress={() => {
+                setIsMenuOpen(false);
+                setShowProfileMenu(true);
+              }}
+              activeOpacity={0.85}
+            >
+              <View style={memberStyles.pillAvatar}>
+                <Text style={memberStyles.pillAvatarText}>{memberInitial}</Text>
+              </View>
+              <Text style={memberStyles.pillName} numberOfLines={1}>
+                {memberName}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.hamburgerButton,
+                isMenuOpen && styles.hamburgerButtonActive,
+              ]}
+              onPress={toggleMenu}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.hamburgerText}>{isMenuOpen ? "✕" : "☰"}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {isMenuOpen && (
@@ -521,35 +544,6 @@ export default function Index() {
           paddingBottom: 40,
         }}
       >
-        <View style={memberStyles.wrapper}>
-          <View style={memberStyles.card}>
-            <View style={memberStyles.infoColumn}>
-              <Text style={memberStyles.badge}>MEMBER AKTIF</Text>
-              <Text style={memberStyles.name} numberOfLines={1}>
-                {memberName}
-              </Text>
-              <Text style={memberStyles.email} numberOfLines={1}>
-                {memberEmail}
-              </Text>
-            </View>
-            <TouchableOpacity
-              style={[
-                memberStyles.logoutButton,
-                loggingOut && memberStyles.logoutButtonDisabled,
-              ]}
-              onPress={handleLogout}
-              disabled={loggingOut}
-              activeOpacity={0.85}
-            >
-              {loggingOut ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <Text style={memberStyles.logoutText}>Logout</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-
         {activeMenu === "Tentang" ? (
           aboutContent
         ) : (
@@ -643,61 +637,173 @@ export default function Index() {
           </>
         )}
       </ScrollView>
+
+      <Modal
+        visible={showProfileMenu}
+        transparent
+        animationType="fade"
+        onRequestClose={() => {
+          if (!loggingOut) {
+            setShowProfileMenu(false);
+          }
+        }}
+      >
+        <Pressable
+          style={memberStyles.modalBackdrop}
+          onPress={() => {
+            if (!loggingOut) {
+              setShowProfileMenu(false);
+            }
+          }}
+        >
+          <Pressable
+            style={memberStyles.modalCard}
+            onPress={(event) => event.stopPropagation()}
+          >
+            <View style={memberStyles.modalAvatar}>
+              <Text style={memberStyles.modalAvatarText}>{memberInitial}</Text>
+            </View>
+            <Text style={memberStyles.modalBadge}>AKUN MEMBER</Text>
+            <Text style={memberStyles.modalName}>{memberName}</Text>
+            <Text style={memberStyles.modalEmail}>{memberEmail}</Text>
+
+            <View style={memberStyles.modalActions}>
+              <TouchableOpacity
+                style={[
+                  memberStyles.logoutButton,
+                  loggingOut && memberStyles.logoutButtonDisabled,
+                ]}
+                onPress={handleLogout}
+                disabled={loggingOut}
+                activeOpacity={0.85}
+              >
+                {loggingOut ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Text style={memberStyles.logoutText}>Logout</Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={memberStyles.closeButton}
+                onPress={() => setShowProfileMenu(false)}
+                disabled={loggingOut}
+                activeOpacity={0.8}
+              >
+                <Text style={memberStyles.closeButtonText}>Tutup</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const memberStyles = StyleSheet.create({
-  wrapper: {
-    width: "100%",
-    maxWidth: 680,
-    alignSelf: "center",
-    paddingHorizontal: 16,
-    paddingTop: 14,
-  },
-  card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+  headerRightGroup: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-    shadowColor: "#003087",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
+    gap: 8,
+    flexShrink: 1,
   },
-  infoColumn: {
+  profilePill: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#EFF6FF",
+    borderWidth: 1,
+    borderColor: "#BFDBFE",
+    borderRadius: 999,
+    paddingVertical: 4,
+    paddingLeft: 4,
+    paddingRight: 10,
+    gap: 7,
+    maxWidth: 150,
+  },
+  pillAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 999,
+    backgroundColor: "#003087",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pillAvatarText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "800",
+  },
+  pillName: {
+    color: "#003087",
+    fontSize: 12,
+    fontWeight: "700",
+    flexShrink: 1,
+  },
+  modalBackdrop: {
     flex: 1,
+    backgroundColor: "rgba(15, 23, 42, 0.45)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
   },
-  badge: {
+  modalCard: {
+    width: "100%",
+    maxWidth: 340,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    padding: 22,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    shadowColor: "#001845",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  modalAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 999,
+    backgroundColor: "#003087",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  modalAvatarText: {
+    color: "#FFFFFF",
+    fontSize: 22,
+    fontWeight: "800",
+  },
+  modalBadge: {
     fontSize: 10,
     fontWeight: "800",
     color: "#0071DC",
-    letterSpacing: 1,
-    marginBottom: 2,
+    letterSpacing: 1.2,
+    marginBottom: 4,
   },
-  name: {
-    fontSize: 15,
+  modalName: {
+    fontSize: 18,
     fontWeight: "800",
     color: "#0F172A",
+    textAlign: "center",
   },
-  email: {
-    fontSize: 12,
+  modalEmail: {
+    fontSize: 13,
     color: "#64748B",
-    marginTop: 2,
+    textAlign: "center",
+    marginTop: 4,
+    marginBottom: 20,
+  },
+  modalActions: {
+    width: "100%",
+    gap: 10,
   },
   logoutButton: {
     backgroundColor: "#DC2626",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderRadius: 10,
-    minWidth: 78,
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -706,8 +812,21 @@ const memberStyles = StyleSheet.create({
   },
   logoutText: {
     color: "#FFFFFF",
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "800",
+  },
+  closeButton: {
+    backgroundColor: "#F1F5F9",
+    paddingVertical: 11,
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeButtonText: {
+    color: "#334155",
+    fontSize: 13,
+    fontWeight: "700",
   },
   syncBox: {
     marginTop: 12,
