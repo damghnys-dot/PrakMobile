@@ -1,10 +1,12 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
+  StyleSheet,
   Text,
   TouchableOpacity,
   useWindowDimensions,
@@ -27,7 +29,9 @@ import { BerandaRental } from "../../features/rental/BerandaRental";
 import BookingForm, { BookingData } from "../../components/BookingForm";
 
 import BookingResult from "../../components/BookingResult";
+import { useAuth } from "../../context/AuthContext";
 import { useRental } from "../../context/RentalContext";
+import { supabase } from "../../lib/supabase";
 
 export default function Index() {
   const router = useRouter();
@@ -41,6 +45,25 @@ export default function Index() {
   >("keahlian");
 
   const { selectedPaket, setSelectedPaket } = useRental();
+  const { user } = useAuth();
+  const [loggingOut, setLoggingOut] = useState<boolean>(false);
+
+  const callsignMeta = user?.user_metadata?.callsign;
+  const memberName =
+    typeof callsignMeta === "string" && callsignMeta.trim().length > 0
+      ? callsignMeta.trim()
+      : user?.email || "Member TRIO";
+  const memberEmail = user?.email || "-";
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      await supabase.auth.signOut();
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
 
@@ -393,6 +416,35 @@ export default function Index() {
           paddingBottom: 40,
         }}
       >
+        <View style={memberStyles.wrapper}>
+          <View style={memberStyles.card}>
+            <View style={memberStyles.infoColumn}>
+              <Text style={memberStyles.badge}>MEMBER AKTIF</Text>
+              <Text style={memberStyles.name} numberOfLines={1}>
+                {memberName}
+              </Text>
+              <Text style={memberStyles.email} numberOfLines={1}>
+                {memberEmail}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[
+                memberStyles.logoutButton,
+                loggingOut && memberStyles.logoutButtonDisabled,
+              ]}
+              onPress={handleLogout}
+              disabled={loggingOut}
+              activeOpacity={0.85}
+            >
+              {loggingOut ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text style={memberStyles.logoutText}>Logout</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+
         {activeMenu === "Tentang" ? (
           aboutContent
         ) : (
@@ -457,3 +509,67 @@ export default function Index() {
     </SafeAreaView>
   );
 }
+
+const memberStyles = StyleSheet.create({
+  wrapper: {
+    width: "100%",
+    maxWidth: 680,
+    alignSelf: "center",
+    paddingHorizontal: 16,
+    paddingTop: 14,
+  },
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    shadowColor: "#003087",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  infoColumn: {
+    flex: 1,
+  },
+  badge: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: "#0071DC",
+    letterSpacing: 1,
+    marginBottom: 2,
+  },
+  name: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#0F172A",
+  },
+  email: {
+    fontSize: 12,
+    color: "#64748B",
+    marginTop: 2,
+  },
+  logoutButton: {
+    backgroundColor: "#DC2626",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    minWidth: 78,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoutButtonDisabled: {
+    opacity: 0.7,
+  },
+  logoutText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "800",
+  },
+});
