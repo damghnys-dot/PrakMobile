@@ -8,11 +8,10 @@ export async function fetchKatalogGame(): Promise<PlayStationGame[]> {
     throw new Error("Gagal mengambil data katalog game dari server");
   }
 
-  await delay(1000); // Simulasi loading 1 detik
+  await delay(1000);
 
   const data: PlayStationGame[] = await response.json();
 
-  // 1. Buat daftar kata kunci game AAA / Populer yang biasa ada di Rental PS
   const kataKunciPopuler = [
     "Grand Theft Auto",
     "God of War",
@@ -26,12 +25,10 @@ export async function fetchKatalogGame(): Promise<PlayStationGame[]> {
     "Horizon Zero Dawn",
   ];
 
-  // 2. Saring (filter) data API, hanya ambil game yang namanya mengandung kata kunci di atas
   const gamePopuler = data.filter((game) =>
     kataKunciPopuler.some((kata) => game.name.includes(kata)),
   );
 
-  // 3. Kembalikan 10 game teratas dari hasil saringan tersebut
   return gamePopuler.slice(0, 10);
 }
 
@@ -58,4 +55,27 @@ export function cekKetersediaanUnitPS(
       }
     }, 1500);
   });
+}
+
+const DUMMY_GAMES: PlayStationGame[] = [
+  {
+    id: 1,
+    name: "God of War Ragnarok",
+    genre: ["Action", "Adventure"],
+    developers: ["Santa Monica Studio"],
+  },
+  {
+    id: 2,
+    name: "Grand Theft Auto V",
+    genre: ["Action", "Open World"],
+    developers: ["Rockstar North"],
+  },
+];
+export async function fetchApi(): Promise<PlayStationGame[]> {
+  await delay(1500);
+  return DUMMY_GAMES;
+}
+export async function fetchDummyKatalogGame(): Promise<PlayStationGame[]> {
+  await delay(1500);
+  return DUMMY_GAMES;
 }

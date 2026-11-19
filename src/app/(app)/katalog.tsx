@@ -17,9 +17,7 @@ import ErrorMessage from "../../components/ErrorMessage";
 import Loading from "../../components/Loading";
 import { DAFTAR_PAKET } from "../../constants/rental";
 import {
-  cekJarakPengantaran,
   cekKetersediaanUnitPS,
-  cekKodePromo,
   fetchKatalogGame,
 } from "../../services/rentalApiService";
 import { PlayStationGame } from "../../types/game";
@@ -103,21 +101,6 @@ export default function KatalogScreen() {
       .finally(() => {
         setCheckingStok(false);
       });
-  };
-
-  const handleTestAntar = () => {
-    cekJarakPengantaran(5)
-      .then((pesanSukses) => {
-        alert(pesanSukses);
-      })
-      .catch((pesanGagal) => {
-        alert(pesanGagal);
-      });
-  };
-
-  const handleTestPromo = async () => {
-    const pesan = await cekKodePromo("TRIO20");
-    alert(pesan);
   };
 
   return (
@@ -296,26 +279,6 @@ export default function KatalogScreen() {
                 <Text style={styles.rejectMessage}>{errorCek}</Text>
               </View>
             )}
-
-            <TouchableOpacity
-              style={[styles.btnRefresh, { marginTop: 16 }]}
-              onPress={handleTestAntar}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.btnRefreshText}>
-                Tes Cek Jarak Antar (6 km)
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.btnRefresh, { marginTop: 12 }]}
-              onPress={handleTestPromo}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.btnRefreshText}>
-                Tes Cek Kode Promo (TRIO20)
-              </Text>
-            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
