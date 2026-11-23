@@ -14,6 +14,7 @@ interface MyBookingsSectionProps {
   error: string | null;
   actionError: string | null;
   onRefresh: () => void;
+  onCompleteBooking: (bookingId: string) => void;
   onCancelBooking: (bookingId: string) => void;
 }
 
@@ -48,6 +49,7 @@ export default function MyBookingsSection({
   error,
   actionError,
   onRefresh,
+  onCompleteBooking,
   onCancelBooking,
 }: MyBookingsSectionProps) {
   return (
@@ -105,44 +107,78 @@ export default function MyBookingsSection({
         </View>
       ) : (
         <View style={styles.listContainer}>
-          {bookings.map((item) => (
-            <View key={item.id} style={styles.bookingCard}>
-              <View style={styles.cardTopRow}>
-                <View style={styles.paketGroup}>
-                  <Text style={styles.paketName}>{item.paket_nama}</Text>
-                  <Text style={styles.dateText}>
-                    Dibuat: {formatTanggalCreatedAt(item.created_at)}
-                  </Text>
+          {bookings.map((item) => {
+            const normalizedStatus = item.status.trim().toLowerCase();
+            const isAktif = normalizedStatus === "aktif";
+            const isSelesai = normalizedStatus === "selesai";
+
+            return (
+              <View key={item.id} style={styles.bookingCard}>
+                <View style={styles.cardTopRow}>
+                  <View style={styles.paketGroup}>
+                    <Text style={styles.paketName}>{item.paket_nama}</Text>
+                    <Text style={styles.dateText}>
+                      Dibuat: {formatTanggalCreatedAt(item.created_at)}
+                    </Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      isSelesai && styles.statusBadgeCompleted,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.statusText,
+                        isSelesai && styles.statusTextCompleted,
+                      ]}
+                    >
+                      {formatStatusLabel(item.status)}
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.statusBadge}>
-                  <Text style={styles.statusText}>
-                    {formatStatusLabel(item.status)}
-                  </Text>
+
+                <View style={styles.metaRow}>
+                  <View style={styles.metaItem}>
+                    <Text style={styles.metaLabel}>Durasi Sewa</Text>
+                    <Text style={styles.metaValue}>
+                      {item.durasi_hari} Hari
+                    </Text>
+                  </View>
+                  <View style={styles.metaItem}>
+                    <Text style={styles.metaLabel}>Total Harga</Text>
+                    <Text style={styles.priceValue}>
+                      {formatRupiah(item.total_harga)}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.actionRow}>
+                  {isAktif && (
+                    <TouchableOpacity
+                      style={styles.completeButton}
+                      onPress={() => onCompleteBooking(item.id)}
+                      activeOpacity={0.85}
+                    >
+                      <Text style={styles.completeButtonText}>
+                        Tandai Selesai
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => onCancelBooking(item.id)}
+                    activeOpacity={0.85}
+                  >
+                    <Text style={styles.cancelButtonText}>
+                      {isSelesai ? "Hapus Riwayat" : "Batalkan Pesanan"}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-
-              <View style={styles.metaRow}>
-                <View style={styles.metaItem}>
-                  <Text style={styles.metaLabel}>Durasi Sewa</Text>
-                  <Text style={styles.metaValue}>{item.durasi_hari} Hari</Text>
-                </View>
-                <View style={styles.metaItem}>
-                  <Text style={styles.metaLabel}>Total Harga</Text>
-                  <Text style={styles.priceValue}>
-                    {formatRupiah(item.total_harga)}
-                  </Text>
-                </View>
-              </View>
-
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => onCancelBooking(item.id)}
-                activeOpacity={0.85}
-              >
-                <Text style={styles.cancelButtonText}>Batalkan Pesanan</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+            );
+          })}
         </View>
       )}
     </View>
@@ -303,10 +339,16 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 999,
   },
+  statusBadgeCompleted: {
+    backgroundColor: "#DCFCE7",
+  },
   statusText: {
     fontSize: 11,
     fontWeight: "700",
     color: "#1E40AF",
+  },
+  statusTextCompleted: {
+    color: "#166534",
   },
   metaRow: {
     flexDirection: "row",
@@ -335,13 +377,32 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#0071DC",
   },
+  actionRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  completeButton: {
+    flex: 1,
+    backgroundColor: "#16A34A",
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  completeButtonText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "800",
+  },
   cancelButton: {
+    flex: 1,
     backgroundColor: "#FEE2E2",
     borderWidth: 1,
     borderColor: "#FCA5A5",
     borderRadius: 8,
     paddingVertical: 10,
     alignItems: "center",
+    justifyContent: "center",
   },
   cancelButtonText: {
     color: "#B91C1C",

@@ -38,6 +38,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useRental } from "../../context/RentalContext";
 import { supabase } from "../../lib/supabase";
 import {
+  completeBookingById,
   createBooking,
   deleteBookingById,
   fetchUserBookings,
@@ -125,6 +126,27 @@ export default function Index() {
       setLoadingBookings(false);
     }
   }, [user?.id, loadBookings]);
+
+  const handleCompleteBooking = async (bookingId: string) => {
+    const previousBookings = bookings;
+    setBookingActionError(null);
+    setBookings((current) =>
+      current.map((item) =>
+        item.id === bookingId ? { ...item, status: "selesai" } : item,
+      ),
+    );
+
+    try {
+      await completeBookingById(bookingId);
+    } catch (err: unknown) {
+      setBookings(previousBookings);
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Gagal memperbarui status pesanan. Data telah dikembalikan.";
+      setBookingActionError(msg);
+    }
+  };
 
   const handleCancelBooking = async (bookingId: string) => {
     const previousBookings = bookings;
@@ -631,6 +653,7 @@ export default function Index() {
                 error={bookingsError}
                 actionError={bookingActionError}
                 onRefresh={() => loadBookings(false)}
+                onCompleteBooking={handleCompleteBooking}
                 onCancelBooking={handleCancelBooking}
               />
             </View>

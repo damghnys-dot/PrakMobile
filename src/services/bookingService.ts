@@ -62,6 +62,17 @@ export async function fetchUserBookings(): Promise<Booking[]> {
   return (data ?? []) as Booking[];
 }
 
+export async function completeBookingById(bookingId: string): Promise<void> {
+  const { error } = await supabase
+    .from("bookings")
+    .update({ status: "selesai" })
+    .eq("id", bookingId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function deleteBookingById(bookingId: string): Promise<void> {
   const { error } = await supabase
     .from("bookings")
