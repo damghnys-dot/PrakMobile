@@ -20,6 +20,14 @@ interface MyBookingsSectionProps {
 const formatRupiah = (angka: number): string =>
   `Rp ${angka.toLocaleString("id-ID")}`;
 
+const formatStatusLabel = (status: string): string => {
+  const trimmed = status.trim();
+  if (!trimmed) {
+    return "Aktif";
+  }
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+};
+
 const formatTanggalCreatedAt = (isoString: string): string => {
   const date = new Date(isoString);
   if (Number.isNaN(date.getTime())) {
@@ -107,7 +115,9 @@ export default function MyBookingsSection({
                   </Text>
                 </View>
                 <View style={styles.statusBadge}>
-                  <Text style={styles.statusText}>{item.status}</Text>
+                  <Text style={styles.statusText}>
+                    {formatStatusLabel(item.status)}
+                  </Text>
                 </View>
               </View>
 

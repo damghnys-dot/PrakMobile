@@ -20,21 +20,23 @@ export interface CreateBookingPayload {
   paketNama: string;
   durasiHari: number;
   totalHarga: number;
-  status?: string;
 }
 
 export async function createBooking(
   payload: CreateBookingPayload,
 ): Promise<Booking> {
+  const durasiHari = Math.max(1, Math.trunc(Number(payload.durasiHari) || 1));
+  const totalHarga = Math.max(0, Math.round(Number(payload.totalHarga) || 0));
+
   const { data, error } = await supabase
     .from("bookings")
     .insert([
       {
         user_id: payload.userId,
         paket_nama: payload.paketNama,
-        durasi_hari: payload.durasiHari,
-        total_harga: payload.totalHarga,
-        status: payload.status ?? "Menunggu Konfirmasi",
+        durasi_hari: durasiHari,
+        total_harga: totalHarga,
+        status: "aktif",
       },
     ])
     .select()
