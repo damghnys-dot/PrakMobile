@@ -105,7 +105,7 @@ export default function KatalogScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor="#0071DC" />
+      <StatusBar barStyle="light-content" />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}

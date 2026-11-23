@@ -18,6 +18,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [callsign, setCallsign] = useState<string>("");
+  //const [phone, setPhone] = useState<string>("");
   const [isRegistering, setIsRegistering] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -52,6 +53,14 @@ export default function LoginScreen() {
       setErrorMsg("Kata sandi minimal 6 karakter.");
       return;
     }
+    //if (password.length < 6) {
+    //setErrorMsg("Kata sandi minimal 6 karakter.");
+    //return;
+    //}if (isRegistering && password !== confirmPassword) {
+    //setErrorMsg("Konfirmasi kata sandi tidak cocok.");
+    //return;
+    //}
+    setLoading(true);
 
     setLoading(true);
     try {
@@ -62,6 +71,7 @@ export default function LoginScreen() {
           options: {
             data: {
               callsign: trimmedCallsign,
+              //phone: phone.trim(),
             },
           },
         });
@@ -102,7 +112,7 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor="#003087" />
+      <StatusBar barStyle="light-content" />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -142,18 +152,33 @@ export default function LoginScreen() {
             )}
 
             {isRegistering && (
-              <View style={styles.fieldGroup}>
-                <Text style={styles.label}>Nama Member</Text>
-                <TextInput
-                  style={styles.input}
-                  value={callsign}
-                  onChangeText={setCallsign}
-                  placeholder="Masukkan nama panggilan atau nama lengkap"
-                  placeholderTextColor="#94A3B8"
-                  autoCapitalize="words"
-                  editable={!loading}
-                />
-              </View>
+              <>
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.label}>Nama Member</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={callsign}
+                    onChangeText={setCallsign}
+                    placeholder="Masukkan nama panggilan atau nama lengkap"
+                    placeholderTextColor="#94A3B8"
+                    autoCapitalize="words"
+                    editable={!loading}
+                  />
+                </View>
+                {/*
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.label}>Nomor Hp</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={phone}
+                    onChangeText={setPhone}
+                    placeholder="contoh: 08123118"
+                    placeholderTextColor="#94A3B8"
+                    keyboardType="phone-pad"
+                    editable={!loading}
+                  />
+                </View>*/}
+              </>
             )}
 
             <View style={styles.fieldGroup}>
@@ -187,7 +212,10 @@ export default function LoginScreen() {
             </View>
 
             <TouchableOpacity
-              style={[styles.submitButton, loading && styles.submitButtonDisabled]}
+              style={[
+                styles.submitButton,
+                loading && styles.submitButtonDisabled,
+              ]}
               onPress={handleSubmit}
               disabled={loading}
               activeOpacity={0.85}

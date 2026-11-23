@@ -43,7 +43,7 @@ export default function DetailPaketScreen() {
   if (!paket) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <StatusBar barStyle="light-content" backgroundColor="#0071DC" />
+        <StatusBar barStyle="light-content" />
         <View style={styles.notFoundContainer}>
           <View style={styles.notFoundCard}>
             <View style={styles.notFoundIconContainer}>
@@ -71,7 +71,7 @@ export default function DetailPaketScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor="#0071DC" />
+      <StatusBar barStyle="light-content" />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}

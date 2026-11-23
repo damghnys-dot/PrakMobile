@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ComponentRef, useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -26,7 +26,10 @@ import {
   SKILLS_DATA,
 } from "../../constants/rental";
 
-import { profileStyles, rentalHeaderStyles as styles } from "../../styles/rental";
+import {
+  profileStyles,
+  rentalHeaderStyles as styles,
+} from "../../styles/rental";
 
 import { BerandaRental } from "../../features/rental/BerandaRental";
 
@@ -67,6 +70,7 @@ export default function Index() {
       ? callsignMeta.trim()
       : user?.email || "Member TRIO";
   const memberEmail = user?.email || "-";
+  //const memberPhone = user?.user_metadata?.phone || "-";
   const memberInitial = memberName.charAt(0).toUpperCase() || "M";
 
   const handleLogout = async () => {
@@ -165,7 +169,7 @@ export default function Index() {
     }
   };
 
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
 
   const [bookingY, setBookingY] = useState(0);
   const [paketY, setPaketY] = useState(0);
@@ -475,7 +479,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#0071DC" />
+      <StatusBar barStyle="light-content" />
 
       <View style={styles.headerContainer}>
         <View style={styles.topHeaderBar}>
@@ -518,7 +522,9 @@ export default function Index() {
               onPress={toggleMenu}
               activeOpacity={0.85}
             >
-              <Text style={styles.hamburgerText}>{isMenuOpen ? "✕" : "☰"}</Text>
+              <Text style={styles.hamburgerText}>
+                {isMenuOpen ? "✕" : "☰"}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -689,6 +695,7 @@ export default function Index() {
             <Text style={memberStyles.modalBadge}>AKUN MEMBER</Text>
             <Text style={memberStyles.modalName}>{memberName}</Text>
             <Text style={memberStyles.modalEmail}>{memberEmail}</Text>
+            {/* <Text style={memberStyles.modalEmail}>No.HP{memberPhone}</Text> */}
 
             <View style={memberStyles.modalActions}>
               <TouchableOpacity
